@@ -5,6 +5,6 @@ Accept: application/json
 POST http://localhost:8888/test
 Content-Type: application/x-www-form-urlencoded
 
-name=刘贵
+name=aini
 
 ###
