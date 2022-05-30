@@ -1,0 +1,5 @@
+#可以使用toYml.com进行数据转换
+#logging:
+#  config: classpath:logback-spring1.xml
+#server:
+#  port: 8888
