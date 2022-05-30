@@ -1,0 +1,39 @@
+2022-05-30 18:35:18.583 [main] INFO  com.liugui.springboot.SpringbootApplication - Starting SpringbootApplication using Java 1.8.0_291 on DESKTOP-TNPVI1Q with PID 15140 (D:\ideatask\springboot\target\classes started by 86155 in D:\ideatask\springboot) 
+2022-05-30 18:35:18.590 [main] INFO  com.liugui.springboot.SpringbootApplication - No active profile set, falling back to default profiles: default 
+2022-05-30 18:35:19.380 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http) 
+2022-05-30 18:35:19.390 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"] 
+2022-05-30 18:35:19.391 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat] 
+2022-05-30 18:35:19.392 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.56] 
+2022-05-30 18:35:19.647 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext 
+2022-05-30 18:35:19.648 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1016 ms 
+2022-05-30 18:35:19.912 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"] 
+2022-05-30 18:35:19.923 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path '' 
+2022-05-30 18:35:19.933 [main] INFO  com.liugui.springboot.SpringbootApplication - Started SpringbootApplication in 1.944 seconds (JVM running for 3.091) 
+2022-05-30 18:35:19.935 [main] INFO  com.liugui.springboot.SpringbootApplication - 启动成功 
+2022-05-30 18:35:19.935 [main] INFO  com.liugui.springboot.SpringbootApplication - 地址：	http://127.0.0.1:null 
+2022-05-30 18:35:53.024 [main] INFO  com.liugui.springboot.SpringbootApplication - Starting SpringbootApplication using Java 1.8.0_291 on DESKTOP-TNPVI1Q with PID 7104 (D:\ideatask\springboot\target\classes started by 86155 in D:\ideatask\springboot) 
+2022-05-30 18:35:53.026 [main] INFO  com.liugui.springboot.SpringbootApplication - No active profile set, falling back to default profiles: default 
+2022-05-30 18:35:53.732 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http) 
+2022-05-30 18:35:53.739 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"] 
+2022-05-30 18:35:53.739 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat] 
+2022-05-30 18:35:53.740 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.56] 
+2022-05-30 18:35:53.807 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext 
+2022-05-30 18:35:53.807 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 736 ms 
+2022-05-30 18:35:54.045 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"] 
+2022-05-30 18:35:54.057 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '' 
+2022-05-30 18:35:54.064 [main] INFO  com.liugui.springboot.SpringbootApplication - Started SpringbootApplication in 1.465 seconds (JVM running for 2.393) 
+2022-05-30 18:35:54.066 [main] INFO  com.liugui.springboot.SpringbootApplication - 启动成功 
+2022-05-30 18:35:54.066 [main] INFO  com.liugui.springboot.SpringbootApplication - 地址：	http://127.0.0.1:8888 
+2022-05-30 18:38:19.926 [main] INFO  com.liugui.springboot.SpringbootApplication - Starting SpringbootApplication using Java 1.8.0_291 on DESKTOP-TNPVI1Q with PID 14432 (D:\ideatask\springboot\target\classes started by 86155 in D:\ideatask\springboot) 
+2022-05-30 18:38:19.930 [main] INFO  com.liugui.springboot.SpringbootApplication - No active profile set, falling back to default profiles: default 
+2022-05-30 18:38:20.664 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http) 
+2022-05-30 18:38:20.672 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"] 
+2022-05-30 18:38:20.672 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat] 
+2022-05-30 18:38:20.672 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.56] 
+2022-05-30 18:38:20.744 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext 
+2022-05-30 18:38:20.744 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 762 ms 
+2022-05-30 18:38:20.962 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"] 
+2022-05-30 18:38:20.975 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '' 
+2022-05-30 18:38:20.982 [main] INFO  com.liugui.springboot.SpringbootApplication - Started SpringbootApplication in 1.577 seconds (JVM running for 2.391) 
+2022-05-30 18:38:20.985 [main] INFO  com.liugui.springboot.SpringbootApplication - 启动成功 
+2022-05-30 18:38:20.985 [main] INFO  com.liugui.springboot.SpringbootApplication - 地址：	http://127.0.0.1:8888 
