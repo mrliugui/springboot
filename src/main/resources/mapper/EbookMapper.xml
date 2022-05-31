@@ -21,6 +21,12 @@
     <include refid="Base_Column_List" />
     from ebook
   </select>
+  <select id="searchLike" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />ro
+    from ebook
+    where name like concat('%',#{name},'%')
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

@@ -8,3 +8,7 @@ Content-Type: application/x-www-form-urlencoded
 name=aini
 
 ###
+GET http://localhost:8888/ebook/list?name=spring
+Accept: application/json
+
+###

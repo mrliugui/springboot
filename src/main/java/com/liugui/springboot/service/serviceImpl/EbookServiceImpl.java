@@ -3,9 +3,12 @@ package com.liugui.springboot.service.serviceImpl;
 import com.liugui.springboot.dao.EbookMapper;
 import com.liugui.springboot.pojo.Ebook;
 import com.liugui.springboot.service.EbookService;
+import com.liugui.springboot.vo.EbookVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,8 +18,15 @@ public class EbookServiceImpl implements EbookService {
     private EbookMapper ebookMapper;
 
     @Override
-    public List<Ebook> bookList()
+    public List<EbookVo> bookList(String name)
     {
-        return ebookMapper.searchAllBook();
+        List<EbookVo> ebookVos = new ArrayList<>();
+        List<Ebook> ebooks = ebookMapper.searchLike(name);
+        for (Ebook ebook : ebooks) {
+            EbookVo ebookVo = new EbookVo();
+            BeanUtils.copyProperties(ebook,ebookVo);
+            ebookVos.add(ebookVo);
+        }
+        return ebookVos;
     }
 }
