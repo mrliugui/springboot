@@ -54,13 +54,25 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
-    import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+    import {defineComponent, ref} from 'vue';
+    import {LaptopOutlined, NotificationOutlined, UserOutlined} from '@ant-design/icons-vue';
+    import axios from 'axios';
 
     export default defineComponent({
-  name: 'HomeView',
-  components: {
-    HelloWorld,
-  },
+     name: 'HomeView',
+     components:{
+         UserOutlined,
+         LaptopOutlined,
+         NotificationOutlined,
+     },
+        setup(){
+         axios.get('http://localhost:8888/ebook/list?name=spring').then((response) =>{
+             console.log(response)
+         })
+            return {
+                selectedKeys2: ref<string[]>(['1']),
+                openKeys: ref<string[]>(['sub1']),
+            };
+        }
 });
 </script>
