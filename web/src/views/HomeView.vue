@@ -108,7 +108,8 @@
         setup(){
          const books = ref('')
             onMounted(() => {
-                axios.get('http://localhost:8888/ebook/list').then((response) =>{
+                console.log(process.env)
+                axios.get('/ebook/list').then((response) =>{
                     console.log(response)
                     books.value = response.data.data
                 })
@@ -137,8 +138,8 @@
 </script>
 <style scoped>
   .ant-avatar{
-    width:40px;
-    height:40px;
+    width:50px;
+    height:50px;
     border-radius:8%;
     margin-top:8px;
     line-height: 40px;
