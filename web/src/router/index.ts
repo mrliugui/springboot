@@ -1,5 +1,6 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import AdminView from '../views/admin/Admin-Ebook.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -7,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: HomeView
   },
+    {
+        path: '/admin/ebook',
+        name: 'admin',
+        component: AdminView
+    },
   {
     path: '/about',
     name: 'about',
