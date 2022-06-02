@@ -108,7 +108,6 @@
         setup(){
          const books = ref('')
             onMounted(() => {
-                console.log(process.env)
                 axios.get('/ebook/list').then((response) =>{
                     console.log(response)
                     books.value = response.data.data
