@@ -1,5 +1,6 @@
 package com.liugui.springboot.service.serviceImpl;
 
+import com.github.pagehelper.PageHelper;
 import com.liugui.springboot.dao.EbookMapper;
 import com.liugui.springboot.pojo.Ebook;
 import com.liugui.springboot.req.EbookReq;
@@ -31,6 +32,7 @@ public class EbookServiceImpl implements EbookService {
         if(!ObjectUtils.isEmpty(req.getName())){
             ebooks = ebookMapper.searchLike(req.getName());
         }
+        PageHelper.startPage(1,3);
         ebooks = ebookMapper.searchAllBook();
         List<EbookVo> ebookVos=CopyUtil.copyList(ebooks,EbookVo.class);
         return ebookVos;
