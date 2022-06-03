@@ -1,6 +1,6 @@
 package com.liugui.springboot.vo;
 
-public class EbookVo  {
+public class EbookVo {
 
     private String name;
 

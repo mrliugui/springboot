@@ -110,8 +110,7 @@
                loading.value  = true
                axios.get("/ebook/list",params).then((response) => {
                    loading.value = false
-                   books.value  =response.data.data
-
+                   books.value  =response.data.data.content
                    pagination.current = params.page
                })
             }
@@ -124,7 +123,6 @@
             onMounted(() => {
             handleQuerry({});
             })
-
             return {
                 // data,
                 columns,

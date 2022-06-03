@@ -1,4 +1,4 @@
-package com.liugui.springboot.response;
+package com.liugui.springboot.common;
 
 public class ApiResponse<T> {
     private Integer code;

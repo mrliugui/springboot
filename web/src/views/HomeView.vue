@@ -110,7 +110,7 @@
             onMounted(() => {
                 axios.get('/ebook/list').then((response) =>{
                     console.log(response)
-                    books.value = response.data.data
+                    books.value = response.data.data.content
                 })
             })
             const pagination = {

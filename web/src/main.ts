@@ -13,24 +13,24 @@ import axios from 'axios'
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
-    console.log("请求"+config)
+    console.log("请求",config)
     return config;
 }, function (error) {
     // Do something with request error
-    console.log("请求错误"+error)
+    console.log("请求错误",error)
     return Promise.reject(error);
 });
 
-// Add a response interceptor
+// Add a common interceptor
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    console.log("返回值"+response)
+    // Do something with common data
+    console.log("返回值",response)
     return response;
 }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    console.log("返回错误"+error)
+    // Do something with common error
+    console.log("返回错误",error)
     return Promise.reject(error);
 });
 
