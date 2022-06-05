@@ -35,7 +35,7 @@
             <template v-else-if="column.key === 'action'">
         <span>
           <a-space>
-          <a-button type="primary" size="large">编辑</a-button>
+          <a-button type="primary" size="large" @click="exit(record)">编辑</a-button>
           <a-button type="danger" size="large">删除</a-button>
             </a-space>
         </span>
@@ -45,11 +45,57 @@
       </div>
     </a-layout>
   </a-layout-content>
+  <template>
+    <div>
+      <a-button type="primary" @click="showModal">Open Modal with async logic</a-button>
+      <a-modal
+              v-model:visible="visible"
+              title="书籍"
+              :confirm-loading="confirmLoading"
+              @ok="handleOk"
+      >
+              <a-form
+                      :model="formState"
+                      v-bind="layout"
+                      name="nest-messages"
+                      :validate-messages="validateMessages"
+                      @finish="onFinish"
+              >   <a-form-item :name="['UpdateEbookReq', 'id']" label="id" v-show="false">
+                  <a-input v-model:value="formState.UpdateEbookReq.id" />
+              </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'cover']" label="Cover" :rules="[{ required: true }]">
+                      <a-input v-model:value="formState.UpdateEbookReq.cover" />
+                  </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'name']" label="Name" :rules="[{ required: true }]">
+                      <a-input v-model:value="formState.UpdateEbookReq.name" />
+                  </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'docCount']" label="docCount" :rules="[{ type: 'number', min: 0, max: 99 }]">
+                      <a-input-number v-model:value="formState.UpdateEbookReq.docCount" />
+                  </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'category1Id']" label="Category1">
+                      <a-input v-model:value="formState.UpdateEbookReq.category1Id" />
+                  </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'category2Id']" label="Category1">
+                      <a-input v-model:value="formState.UpdateEbookReq.category2Id" />
+                  </a-form-item>
+                  <a-form-item :name="['UpdateEbookReq', 'description']" label="description">
+                      <a-textarea v-model:value="formState.UpdateEbookReq.description" />
+                  </a-form-item>
+                  <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
+                      <a-button type="primary" html-type="submit"
+
+                      >Submit</a-button>
+                  </a-form-item>
+              </a-form>
+      </a-modal>
+    </div>
+  </template>
 </template>
 <script lang="ts">
     import {DownOutlined, SmileOutlined} from '@ant-design/icons-vue';
-    import {defineComponent, onMounted, reactive, ref} from 'vue';
+    import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
     import axios from "axios";
+    import {message} from "ant-design-vue";
 
     const columns = [
         {
@@ -92,6 +138,85 @@
             key: 'action',
         },
     ];
+    let formState = reactive({
+        UpdateEbookReq: {
+            id:'',
+            cover:'',
+            name: '',
+            docCount: undefined,
+            category1Id: '',
+            category2Id: '',
+            description: '',
+        },
+    });
+    const visible = ref(false);
+    const useModelConfirm =() => {
+        const modalText = ref("Content of the modal");
+        const confirmLoading = ref(false);
+        const showModal = () => {
+            visible.value = true;
+        };
+
+        const handleOk = () => {
+            modalText.value = 'The modal will be closed after two seconds';
+            confirmLoading.value = true;
+            setTimeout(() => {
+                visible.value = false;
+                confirmLoading.value = false;
+            }, 2000);
+        }
+        const exit = (record: any) => {
+            visible.value = true;
+           formState.UpdateEbookReq = record
+        }
+        return {
+            modalText,
+            visible,
+            confirmLoading,
+            showModal,
+            handleOk,
+            exit,
+        };
+    }
+    const useFormConfirm = () =>{
+            const layout = {
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+            };
+
+            const validateMessages = {
+                required: '${label} is required!',
+                types: {
+                    email: '${label} is not a valid email!',
+                    number: '${label} is not a valid number!',
+                },
+                number: {
+                    range: '${label} must be between ${min} and ${max}',
+                },
+            };
+
+            const onFinish = async (values: any) => {
+                console.log(values)
+                try{
+                  await axios.post("/ebook/update",{values}).then((response)=>{
+                  if(response.data.code === 10000){
+                      visible.value = false
+                      message.success("更新成功")
+
+                  }
+                  else{
+                      message.error("更新失败")
+                  }
+              })}catch(e){
+                    message.error("找不到该页面")
+                }
+            };
+            return {
+                onFinish,
+                layout,
+                validateMessages,
+            };
+        }
 
     export default defineComponent({
         components: {
@@ -99,37 +224,60 @@
             DownOutlined,
         },
         setup() {
+            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
+            const { onFinish, layout, validateMessages } = useFormConfirm()
+
             const books = ref('')
             const loading = ref(false)
             const pagination = reactive({
                 current:1,
-                defaultPageSize:3,
-                totalSize:0
+                defaultPageSize:4,
+                total:0
             })
+            const { total } = toRefs(pagination)
             const handleQuerry = (params: any) => {
                loading.value  = true
-               axios.get("/ebook/list",params).then((response) => {
+               axios.get("/ebook/list",{
+                   params:{
+                       pageNum:params.pageNum,
+                       pageSize:params.pageSize,
+                   }
+               }).then((response) => {
                    loading.value = false
                    books.value  =response.data.data.content
-                   pagination.current = params.page
+                   pagination.current = params.pageNum
+                   total.value = response.data.data.total
                })
             }
             const handleChange = (pagination: any) => {
              handleQuerry({
                 page:pagination.current,
                 size:pagination.pageSize
-             })
+            })
             }
             onMounted(() => {
-            handleQuerry({});
+            handleQuerry({
+                pageNum:1,
+                pageSize:pagination.defaultPageSize,
+            });
             })
             return {
                 // data,
+                visible,
                 columns,
                 books,
                 pagination,
                 loading,
-                handleChange
+                handleChange,
+                modalText,
+                confirmLoading,
+                showModal,
+                handleOk,
+                exit,
+                formState,
+                onFinish,
+                layout,
+                validateMessages,
             };
         },
     });

@@ -1,5 +1,7 @@
 package com.liugui.springboot.common;
 
+import com.liugui.springboot.myEnum.ExceptionEnum;
+
 public class ApiResponse<T> {
     private Integer code;
     private String msg;
@@ -21,6 +23,10 @@ public class ApiResponse<T> {
         this.msg=msg;
         this.data=data;
     }
+    public ApiResponse(ExceptionEnum exceptionEnum){
+       this.code = (int)exceptionEnum.getCode();
+        this.msg = exceptionEnum.getMsg();
+    }
     public static<T> ApiResponse<T> success(){
         return new ApiResponse<>();
     }
@@ -31,6 +37,9 @@ public class ApiResponse<T> {
     }
     public static<T> ApiResponse<T> error(Integer code, String msg){
         return new ApiResponse<>(code,msg);
+    }
+    public static<T> ApiResponse<T> error(ExceptionEnum exceptionEnum){
+        return new ApiResponse<>(exceptionEnum);
     }
 
 

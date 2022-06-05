@@ -11,7 +11,7 @@
           <a-sub-menu key="sub1">
             <template #title>
                 <span>
-                  <user-outlined />
+                  <UpdateEbookReq-outlined />
                   subnav 1
                 </span>
             </template>
@@ -108,7 +108,12 @@
         setup(){
          const books = ref('')
             onMounted(() => {
-                axios.get('/ebook/list').then((response) =>{
+                axios.get('/ebook/list',{
+                    params:{
+                        pageSize:100,
+                        pageNum:1
+                    }
+                }).then((response) =>{
                     console.log(response)
                     books.value = response.data.data.content
                 })

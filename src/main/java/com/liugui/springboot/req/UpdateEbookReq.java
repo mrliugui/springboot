@@ -1,13 +1,8 @@
-package com.liugui.springboot.vo;
+package com.liugui.springboot.req;
 
-public class EbookVo {
-    public Long getId() {
-        return id;
-    }
+import java.io.Serializable;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+public class UpdateEbookReq implements Serializable {
 
     private Long id;
 
@@ -23,11 +18,16 @@ public class EbookVo {
 
     private Integer docCount;
 
-    private Integer viewCount;
 
-    private Integer voteCount;
+    private static final long serialVersionUID = 1L;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }
@@ -76,21 +76,8 @@ public class EbookVo {
         this.docCount = docCount;
     }
 
-    public Integer getViewCount() {
-        return viewCount;
-    }
 
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
 
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
 
 
     @Override
@@ -106,8 +93,7 @@ public class EbookVo {
         sb.append(", description=").append(description);
         sb.append(", cover=").append(cover);
         sb.append(", docCount=").append(docCount);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
+        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

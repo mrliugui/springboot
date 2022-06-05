@@ -1,0 +1,29 @@
+package com.liugui.springboot.myEnum;
+
+public enum ExceptionEnum {
+    UPDATE_EXCEPTION(10001,"更新失败")
+    ;
+    private Integer code;
+    private String msg;
+
+    ExceptionEnum(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public long getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+}
