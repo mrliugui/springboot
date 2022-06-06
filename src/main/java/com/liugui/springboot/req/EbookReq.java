@@ -1,6 +1,8 @@
 package com.liugui.springboot.req;
 
-public class EbookReq  extends PageReq{
+
+public class EbookReq extends PageReq{
+
     private Long id;
 
     private String name;

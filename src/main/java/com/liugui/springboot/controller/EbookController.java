@@ -9,6 +9,7 @@ import com.liugui.springboot.vo.PageVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 
 @RestController
@@ -20,7 +21,7 @@ public class EbookController {
 
 
     @GetMapping("/list")
-    public ApiResponse getAll( EbookReq req){
+    public ApiResponse getAll(@Valid EbookReq req){
         PageVo pageVo=ebookService.bookList(req);
         return ApiResponse.success(pageVo);
     }

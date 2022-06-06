@@ -259,6 +259,9 @@
                            });
 
                        }
+                       else{
+                           message.error(response.data.msg)
+                       }
                     }
                 )
             }
@@ -285,7 +288,7 @@
                 defaultPageSize:4,
                 total:0
             })
-            const { current, defaultPageSize } = pagination
+            // const { current, defaultPageSize } = pagination
             // const { total } = toRefs(pagination)
             const handleQuerry = (params: any) => {
                loading.value  = true
@@ -295,10 +298,17 @@
                        pageSize:params.pageSize,
                    }
                }).then((response) => {
-                   loading.value = false
-                   books.value  =response.data.data.content
-                   pagination.current = params.pageNum
-                   pagination.total = response.data.data.total
+                       if(response.data.code === 10000){
+                           loading.value = false
+                           const apiResponse = response.data
+                           books.value  =apiResponse.data.content
+                           pagination.current = params.pageNum
+                           pagination.total = apiResponse.data.total
+                       }
+                       else{
+                           message.error(response.data.msg)
+                       }
+
                })
             }
             const handleChange = (pagination: any) => {
