@@ -1,7 +1,8 @@
 package com.liugui.springboot.myEnum;
 
 public enum ExceptionEnum {
-    UPDATE_EXCEPTION(10001,"更新失败")
+    UPDATE_EXCEPTION(10001,"更新失败"),
+    DELETE_EXCEPTION(10002,"删除失败")
     ;
     private Integer code;
     private String msg;

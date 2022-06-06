@@ -18,19 +18,31 @@ public class EbookController {
     @Resource
     private EbookService ebookService;
 
+
     @GetMapping("/list")
     public ApiResponse getAll( EbookReq req){
         PageVo pageVo=ebookService.bookList(req);
         return ApiResponse.success(pageVo);
     }
     @PostMapping("/update")
-    public ApiResponse update(@RequestBody UpdateEbookReq UpdateEbookReq){
-        int i = ebookService.updateSelectiveEbook(UpdateEbookReq);
+    public ApiResponse update(@RequestBody UpdateEbookReq updateEbookReq){
+        int i = ebookService.updateSelectiveEbook(updateEbookReq);
         if(i!=0){
             return ApiResponse.success();
         }
         else{
             return ApiResponse.error(ExceptionEnum.UPDATE_EXCEPTION);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse delete(@PathVariable("id")Long id){
+        int i = ebookService.deleteById(id);
+        if(i!=0){
+            return ApiResponse.success();
+        }
+        else{
+            return ApiResponse.error(ExceptionEnum.DELETE_EXCEPTION);
         }
     }
 }

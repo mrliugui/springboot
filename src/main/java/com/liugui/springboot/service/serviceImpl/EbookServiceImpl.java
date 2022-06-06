@@ -8,6 +8,7 @@ import com.liugui.springboot.req.EbookReq;
 import com.liugui.springboot.req.UpdateEbookReq;
 import com.liugui.springboot.service.EbookService;
 import com.liugui.springboot.util.CopyUtil;
+import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.EbookVo;
 import com.liugui.springboot.vo.PageVo;
 import org.slf4j.Logger;
@@ -23,6 +24,10 @@ public class EbookServiceImpl implements EbookService {
     private static final Logger logger = LoggerFactory.getLogger(EbookServiceImpl.class);
     @Resource
     private EbookMapper ebookMapper;
+
+
+    @Resource
+    private SnowFlake snowFlake;
 
     @Override
     public PageVo bookList(EbookReq req)
@@ -53,10 +58,25 @@ public class EbookServiceImpl implements EbookService {
     }
 
     @Override
-    public int updateSelectiveEbook(UpdateEbookReq UpdateEbookReq) {
-        Ebook newBook = CopyUtil.copy(UpdateEbookReq, Ebook.class);
-        logger.info("更新的书籍id{}.名称",newBook.getId(),newBook.getName());
-        int i = ebookMapper.updateByPrimaryKeySelective(newBook);
+    public int updateSelectiveEbook(UpdateEbookReq updateEbookReq){
+        if(!ObjectUtils.isEmpty(ebookMapper.selectByPrimaryKey(updateEbookReq.getId()))){
+            Ebook newBook = CopyUtil.copy(updateEbookReq, Ebook.class);
+            logger.info("更新的书籍id{}-名称{}",newBook.getId(),newBook.getName());
+            int i = ebookMapper.updateByPrimaryKeySelective(newBook);
+            return i;
+        }else{
+//            long id = UUID.randomUUID().toString().
+            long id = snowFlake.nextId();
+            updateEbookReq.setId(id);
+            Ebook ebook = CopyUtil.copy(updateEbookReq, Ebook.class);
+            int i = ebookMapper.insertSelective(ebook);
+            return i;
+        }
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        int i = ebookMapper.deleteByPrimaryKey(id);
         return i;
     }
 }

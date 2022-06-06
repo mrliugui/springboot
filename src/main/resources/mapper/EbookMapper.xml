@@ -47,7 +47,7 @@
       #{docCount,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.liugui.springboot.pojo.Ebook">
+  <insert id="insertSelective" parameterType="com.liugui.springboot.pojo.Ebook" useGeneratedKeys="true" keyProperty="id">
     insert into ebook
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
