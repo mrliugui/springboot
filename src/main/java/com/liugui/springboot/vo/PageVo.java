@@ -4,6 +4,7 @@ import java.util.List;
 
 public class PageVo<T>{
     private int total;
+
     private  List<T> content;
 
     public int getTotal() {
