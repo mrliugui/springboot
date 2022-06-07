@@ -15,10 +15,10 @@
 
         <a-table
                 :columns="columns"
-                :data-source="books"
-                :pagination="pagination"
+                :row-key="record => record.id"
+                :data-source="level"
+                :pagination="false"
                 :loading="loading"
-                @change="handleChange"
         >
           <template #headerCell="{ column }">
     
@@ -123,7 +123,7 @@
         },
     });
     const visible = ref(false);
-    const useModelConfirm =(handleQuerry: any,pagination: any) => {
+    const useModelConfirm =() => {
         const modalText = ref("Content of the modal");
         const confirmLoading = ref(false);
         const showModal = () => {
@@ -151,7 +151,7 @@
             exit,
         };
     }
-    const useFormConfirm = (handleQuerry: any,pagination: any,books: any) =>{
+    const useFormConfirm = (handleQuerry: any, books: any) =>{
         const book = ref('')
            const name = ref("")
             const layout = {
@@ -200,10 +200,6 @@
                   if(response.data.code === 10000){
                       visible.value = false
                       message.success("更新成功")
-                      handleQuerry({
-                          pageNum:pagination.current,
-                          pageSize:pagination.defaultPageSize,
-                      })
                   }
                   else{
                       message.error("更新失败")
@@ -216,10 +212,7 @@
                 axios.delete(`/category/delete/${id}`).then(
                     (response)=>{
                        if(response.data.code === 10000){
-                           handleQuerry({
-                               pageNum:pagination.current,
-                               pageSize:pagination.defaultPageSize,
-                           });
+                           handleQuerry();
                        }
                        else{
                            message.error(response.data.msg)
@@ -231,7 +224,6 @@
                 axios.get("/category/list",{params:{name:searchValue}}).then(
                     (response) => {
                         if(response.data.code === 10000){
-                            pagination.total = response.data.data.total
                             books.value = response.data.data.content;
                         }else{
                             message.error(response.data.msg);
@@ -260,27 +252,17 @@
         setup() {
             const books = ref("")
             const loading = ref(false)
-            const pagination = reactive({
-                current:1,
-                defaultPageSize:4,
-                total:0
-            })
-            // const { current, defaultPageSize } = pagination
-            // const { total } = toRefs(pagination)
-            const handleQuerry = (params: any) => {
+            const level = ref<any>()
+            const handleQuerry = () => {
                loading.value  = true
-               axios.get("/category/list",{
-                   params:{
-                       pageNum:params.pageNum,
-                       pageSize:params.pageSize,
-                   }
-               }).then((response) => {
+               axios.get("/category/all").then((response) => {
                        if(response.data.code === 10000){
                            loading.value = false
-                           const apiResponse = response.data
-                           books.value  =apiResponse.data.content
-                           pagination.current = params.pageNum
-                           pagination.total = apiResponse.data.total
+                           books.value = response.data.data
+                          const result = Tool.array2Tree(books.value,0)
+                           level.value = []
+                          level.value = result
+                           console.log(level.value)
                        }
                        else{
                            message.error(response.data.msg)
@@ -288,28 +270,20 @@
 
                })
             }
-            const handleChange = (pagination: any) => {
-             handleQuerry({
-                 pageNum:pagination.current,
-                 pageSize:pagination.pageSize
-            })
+            const handleChange = () => {
+             handleQuerry()
             }
             onMounted(() => {
-            handleQuerry({
-                pageNum:1,
-                pageSize:pagination.defaultPageSize,
-            });
+            handleQuerry();
             })
-            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(handleQuerry,pagination)
-            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,pagination,books)
+            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
+            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,books)
             return {
                 // data,
                 visible,
                 columns,
-                books,
-                pagination,
+                // books,
                 loading,
-                handleChange,
                 modalText,
                 confirmLoading,
                 showModal,
@@ -322,7 +296,8 @@
                 add,
                 handleConfirm,
                 onSearch,
-                name
+                name,
+                level
             };
         },
     });

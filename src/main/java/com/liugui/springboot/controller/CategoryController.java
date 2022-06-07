@@ -5,11 +5,13 @@ import com.liugui.springboot.myEnum.ExceptionEnum;
 import com.liugui.springboot.req.CategoryReq;
 import com.liugui.springboot.req.UpdateCategoryReq;
 import com.liugui.springboot.service.CategoryService;
+import com.liugui.springboot.vo.CategoryVo;
 import com.liugui.springboot.vo.PageVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -20,11 +22,18 @@ public class CategoryController {
     private CategoryService categoryService;
 
 
+    @GetMapping("/all")
+    public ApiResponse getAll(){
+        List<CategoryVo> categoryVos = categoryService.all();
+        return ApiResponse.success(categoryVos);
+    }
+
     @GetMapping("/list")
-    public ApiResponse getAll(@Valid CategoryReq req){
+    public ApiResponse getList(@Valid CategoryReq req){
         PageVo pageVo=categoryService.bookList(req);
         return ApiResponse.success(pageVo);
     }
+
     @PostMapping("/update")
     public ApiResponse update(@RequestBody UpdateCategoryReq updateCategoryReq){
         int i = categoryService.updateSelectiveCategory(updateCategoryReq);

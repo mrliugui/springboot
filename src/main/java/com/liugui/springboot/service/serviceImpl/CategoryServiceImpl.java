@@ -57,6 +57,13 @@ public class CategoryServiceImpl implements CategoryService {
         pageVo.setTotal((int)pageInfo.getTotal());
         return pageVo;
     }
+    @Override
+    public List<CategoryVo> all() {
+        List<Category> categorys=null;
+        categorys = categoryMapper.searchAllBook();
+        List<CategoryVo> categoryVos=CopyUtil.copyList(categorys,CategoryVo.class);
+        return categoryVos;
+    }
 
     @Override
     public int updateSelectiveCategory(UpdateCategoryReq updateCategoryReq){
