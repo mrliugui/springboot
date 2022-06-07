@@ -39,15 +39,16 @@ public class EbookServiceImpl implements EbookService {
 //            ebookVos.add(ebookVo);
 //        }
         List<Ebook> ebooks=null;
-        if(!ObjectUtils.isEmpty(req.getName())){
-            ebooks = ebookMapper.searchLike(req.getName());
-        }
-        if(req.getPageNum() == 0 && req.getPageSize() == 0){
+        if(req.getPageNum() == 0 && req.getPageSize() == 0) {
             req.setPageNum(1);
             req.setPageSize(5);
         }
-        PageHelper.startPage(req.getPageNum(),req.getPageSize());
-        ebooks = ebookMapper.searchAllBook();
+        PageHelper.startPage(req.getPageNum(), req.getPageSize());
+        if(!ObjectUtils.isEmpty(req.getName())){
+            ebooks = ebookMapper.searchLike(req.getName());
+        }else{
+            ebooks = ebookMapper.searchAllBook();
+        }
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebooks);
         logger.info("分页参数为{}",pageInfo);
         List<EbookVo> ebookVos=CopyUtil.copyList(ebooks,EbookVo.class);

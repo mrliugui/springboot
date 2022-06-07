@@ -3,7 +3,16 @@
   <a-layout-content style="padding: 0 50px">
     <a-layout style="padding: 24px 0; background: #fff;min-height: 280px;">
       <div class="about">
-          <a-button type="primary" @click="add" size="large" style="margin-left: 15px;">新增</a-button>
+          <a-input-search
+                  style="width: 300px;margin-left: 10px;margin-bottom:5px"
+                  v-bind:value="book"
+                  placeholder="请输入你要查询的书籍"
+                  enter-button="Search"
+                  size="large"
+                  @search="onSearch"
+          />
+              <a-button type="primary" @click="add" size="large" style="margin-left: 15px;margin-bottom: 5px">新增</a-button>
+
         <a-table
                 :columns="columns"
                 :data-source="books"
@@ -185,7 +194,9 @@
             exit,
         };
     }
-    const useFormConfirm = (handleQuerry: any,pagination: any) =>{
+    const useFormConfirm = (handleQuerry: any,pagination: any,books: any) =>{
+        const book = ref('')
+           const name = ref("")
             const layout = {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
@@ -257,7 +268,6 @@
                                pageNum:pagination.current,
                                pageSize:pagination.defaultPageSize,
                            });
-
                        }
                        else{
                            message.error(response.data.msg)
@@ -265,13 +275,28 @@
                     }
                 )
             }
+            function onSearch(searchValue: string){
+                axios.get("/ebook/list",{params:{name:searchValue}}).then(
+                    (response) => {
+                        if(response.data.code === 10000){
+                            pagination.total = response.data.data.total
+                            books.value = response.data.data.content;
+                        }else{
+                            message.error(response.data.msg);
+                        }
+
+                    }
+                )
+            }
             return {
+                name,
                 onFinish,
                 layout,
                 validateMessages,
                 add,
-                handleConfirm
-
+                handleConfirm,
+                onSearch,
+                book
             };
         }
 
@@ -281,7 +306,7 @@
             DownOutlined,
         },
         setup() {
-            const books = ref('')
+            const books = ref("")
             const loading = ref(false)
             const pagination = reactive({
                 current:1,
@@ -324,7 +349,7 @@
             });
             })
             const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(handleQuerry,pagination)
-            const { onFinish, layout, validateMessages, add,handleConfirm} = useFormConfirm(handleQuerry,pagination)
+            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,pagination,books)
             return {
                 // data,
                 visible,
@@ -343,7 +368,9 @@
                 layout,
                 validateMessages,
                 add,
-                handleConfirm
+                handleConfirm,
+                onSearch,
+                name
             };
         },
     });
