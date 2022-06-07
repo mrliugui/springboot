@@ -112,6 +112,7 @@
     import {defineComponent, onMounted, reactive, ref} from 'vue';
     import axios from "axios";
     import {message} from "ant-design-vue";
+    import {Tool} from "../../util/tool";
 
     const columns = [
         {
@@ -183,7 +184,7 @@
         }
         const exit = (record: any) => {
             visible.value = true;
-           formState.ebook = record
+           formState.ebook = Tool.copy(record)
         }
         return {
             modalText,
