@@ -1,5 +1,4 @@
 <template>
-
   <a-layout-content style="padding: 0 50px">
     <a-layout style="padding: 24px 0; background: #fff;min-height: 280px;">
       <div class="about">

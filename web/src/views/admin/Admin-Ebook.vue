@@ -1,6 +1,5 @@
 <template>
-
-  <a-layout-content style="padding: 0 50px">
+<a-layout-content style="padding: 0 50px">
     <a-layout style="padding: 24px 0; background: #fff;min-height: 280px;">
       <div class="about">
           <a-input-search
@@ -39,6 +38,15 @@
                 />
               </a>
             </template>
+              <template v-else-if="column.key === 'category1Id'">
+                 <span>{{ getCategoryName(record.category1Id) }}</span>
+              </template>
+              <template v-else-if="column.key === 'category2Id'">
+                 <span>{{getCategoryName(record.category2Id)}}</span>
+              </template>
+              <!--<template v-slot:category="{text,record}">-->
+                  <!--<span>分类</span>-->
+              <!--</template>-->
             <!--<template v-else-if="column.key === 'tags'">-->
              <!--<span>{{record.name}}</span>-->
             <!--</template>-->
@@ -89,11 +97,11 @@
                   <a-form-item :name="['ebook', 'docCount']" label="docCount" :rules="[{ type: 'number', min: 0, max: 99}]">
                       <a-input-number v-model:value="formState.ebook.docCount" />
                   </a-form-item>
-                  <a-form-item :name="['ebook', 'category1Id']" label="Category1" :rules="[{type:'number',min: 0, max: 10}]">
-                      <a-input-number  v-model:value="formState.ebook.category1Id" />
-                  </a-form-item>
-                  <a-form-item :name="['ebook', 'category2Id']" label="Category2" :rules="[{type:'number',min: 0, max: 10}]">
-                      <a-input-number  v-model:value="formState.ebook.category2Id" />
+                  <a-form-item :name="['ebook', 'category']" label="docCount">
+                  <a-cascader v-model:value="categoryIds" :options="level1"
+                              placeholder="Please select"
+                              :field-names="{ label: 'name', value: 'id', children: 'children' }"
+                  />
                   </a-form-item>
                   <a-form-item :name="['ebook', 'description']" label="description" >
                       <a-textarea v-model:value="formState.ebook.description" />
@@ -132,9 +140,14 @@
         },
         {
             title: '分类二',
-            key: 'category2Id',
             dataIndex: 'category2Id',
+            key: 'category2Id',
         },
+
+        // {
+        //     title: '分类',
+        //     slots:{ customRender:'category' }
+        // },
         {
             title: '文档数',
             key: 'doc_count',
@@ -167,6 +180,7 @@
         },
     });
     const visible = ref(false);
+    let categoryIds  = ref()
     const useModelConfirm =(handleQuerry: any,pagination: any) => {
         const modalText = ref("Content of the modal");
         const confirmLoading = ref(false);
@@ -184,7 +198,8 @@
         }
         const exit = (record: any) => {
             visible.value = true;
-           formState.ebook = Tool.copy(record)
+            formState.ebook = Tool.copy(record)
+            categoryIds.value = [formState.ebook.category1Id,formState.ebook.category2Id]
         }
         return {
             modalText,
@@ -195,9 +210,28 @@
             exit,
         };
     }
-    const useFormConfirm = (handleQuerry: any,pagination: any,books: any) =>{
+    const useFormConfirm = (handleQuerry: any,pagination: any,books: any,loading: any) =>{
         const book = ref('')
-           const name = ref("")
+        const name = ref("")
+        let category: any
+        const level1 = ref<any>()
+        const handleCategoryQuerry = () => {
+            loading.value  = true
+            axios.get("/category/all").then((response) => {
+                if(response.data.code === 10000){
+                    loading.value = false
+                    category = response.data.data
+                    const result = Tool.array2Tree(category,0)
+                    level1.value = []
+                    level1.value = result
+                    console.log(level1.value)
+                }
+                else{
+                    message.error(response.data.msg)
+                }
+
+            })
+        }
             const layout = {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
@@ -232,8 +266,8 @@
                 console.log(values)
 
                 const data = {
-                    "category1Id": ebook.category1Id,
-                    "category2Id": ebook.category2Id,
+                    "category1Id": categoryIds.value[0],
+                    "category2Id": categoryIds.value[1],
                     "cover": ebook.cover,
                     "description": ebook.description,
                     "docCount": ebook.docCount,
@@ -289,6 +323,14 @@
                     }
                 )
             }
+            const getCategoryName = (id: any) => {
+                let result: any
+                for (let categoryKey in category) {
+                    if(category[categoryKey].id === id){
+                        result = category[categoryKey].name
+                    }
+                }
+                return result;}
             return {
                 name,
                 onFinish,
@@ -297,7 +339,9 @@
                 add,
                 handleConfirm,
                 onSearch,
-                book
+                handleCategoryQuerry,
+                level1,
+                getCategoryName
             };
         }
 
@@ -314,6 +358,12 @@
                 defaultPageSize:4,
                 total:0
             })
+            // computed: {
+            //     layout() {
+            //         const layout = this.$route.meta.layout || 'default'
+            //         return () => import(`@/app/layouts/${layout}.vue`)
+            //     }
+            // }
             // const { current, defaultPageSize } = pagination
             // const { total } = toRefs(pagination)
             const handleQuerry = (params: any) => {
@@ -343,15 +393,18 @@
                  pageSize:pagination.pageSize
             })
             }
-            onMounted(() => {
-            handleQuerry({
-                pageNum:1,
-                pageSize:pagination.defaultPageSize,
-            });
-            })
             const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(handleQuerry,pagination)
-            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,pagination,books)
-            return {
+            const { onFinish, layout,name, validateMessages,
+                add,handleConfirm, onSearch,handleCategoryQuerry,
+                level1,getCategoryName} = useFormConfirm(handleQuerry,pagination,books,loading)
+            onMounted(() => {
+                handleCategoryQuerry()
+                handleQuerry({
+                    pageNum:1,
+                    pageSize:pagination.defaultPageSize,
+                });
+            })
+                return {
                 // data,
                 visible,
                 columns,
@@ -371,7 +424,11 @@
                 add,
                 handleConfirm,
                 onSearch,
-                name
+                name,
+                handleCategoryQuerry,
+                    level1,
+                    categoryIds,
+                    getCategoryName
             };
         },
     });
