@@ -69,9 +69,22 @@
               </a-form-item>
                   <a-form-item :name="['category', 'name']" label="name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.category.name" />
+
                   </a-form-item>
                   <a-form-item :name="['category', 'parent']" label="parent" :rules="[{required: true}]">
                       <a-input-number v-model:value="formState.category.parent" />
+                      <a-select
+                              ref="select"
+                              v-model:value="formState.category.parent"
+                      >
+                          <a-select-option  :value="0">无</a-select-option>
+                          <a-select-option  v-for="item in level" :value="item.id"
+                                            :key="item.id"
+                                            :disabled="formState.category.id === item.id">
+                              {{item.name}}
+                          </a-select-option>
+                      </a-select>
+
                   </a-form-item>
                   <a-form-item :name="['category', 'sort']" label="Category1" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.category.sort" />
@@ -151,7 +164,7 @@
             exit,
         };
     }
-    const useFormConfirm = (handleQuerry: any, books: any) =>{
+    const useFormConfirm = (handleQuerry: any, level: any) =>{
         const book = ref('')
            const name = ref("")
             const layout = {
@@ -224,7 +237,7 @@
                 axios.get("/category/list",{params:{name:searchValue}}).then(
                     (response) => {
                         if(response.data.code === 10000){
-                            books.value = response.data.data.content;
+                            level.value = response.data.data.content;
                         }else{
                             message.error(response.data.msg);
                         }
@@ -277,7 +290,7 @@
             handleQuerry();
             })
             const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
-            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,books)
+            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,level)
             return {
                 // data,
                 visible,
