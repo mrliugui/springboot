@@ -7,42 +7,17 @@
                 v-model:openKeys="openKeys"
                 mode="inline"
                 style="height: 100%"
+
         >
-          <a-sub-menu key="sub1">
+          <a-sub-menu v-for="item in level"
+                      :key="item.id">
             <template #title>
                 <span>
                   <UpdateEbookReq-outlined />
-                  subnav 1
+                  {{item.name}}
                 </span>
             </template>
-            <a-menu-item key="1">option1</a-menu-item>
-            <a-menu-item key="2">option2</a-menu-item>
-            <a-menu-item key="3">option3</a-menu-item>
-            <a-menu-item key="4">option4</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub2">
-            <template #title>
-                <span>
-                  <laptop-outlined />
-                  subnav 2
-                </span>
-            </template>
-            <a-menu-item key="5">option5</a-menu-item>
-            <a-menu-item key="6">option6</a-menu-item>
-            <a-menu-item key="7">option7</a-menu-item>
-            <a-menu-item key="8">option8</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub3">
-            <template #title>
-                <span>
-                  <notification-outlined />
-                  subnav 3
-                </span>
-            </template>
-            <a-menu-item key="9">option9</a-menu-item>
-            <a-menu-item key="10">option10</a-menu-item>
-            <a-menu-item key="11">option11</a-menu-item>
-            <a-menu-item key="12">option12</a-menu-item>
+            <a-menu-item v-for="childrenItem in item.children" :key="childrenItem.id">{{childrenItem.name}}</a-menu-item>
           </a-sub-menu>
         </a-menu>
       </a-layout-sider>
@@ -72,6 +47,8 @@
 
 <script lang="ts">
     import {defineComponent, onMounted, ref} from 'vue';
+    import {message} from "ant-design-vue";
+    import {Tool} from "../util/tool";
     import {
         LaptopOutlined,
         LikeOutlined,
@@ -82,19 +59,6 @@
     } from '@ant-design/icons-vue';
     import axios from 'axios';
 
-    const listData: Record<string, string>[] = [];
-
-    for (let i = 0; i < 23; i++) {
-        listData.push({
-            href: 'https://www.antdv.com/',
-            title: `ant design vue part ${i}`,
-            avatar: 'https://joeschmoe.io/api/v1/random',
-            description:
-                'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-            content:
-                'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        });
-    }
     export default defineComponent({
      name: 'HomeView',
      components:{
@@ -106,8 +70,25 @@
          MessageOutlined,
      },
         setup(){
+            const level = ref<any>()
+            const handleCategoryQuerry = () => {
+                axios.get("/category/all").then((response) => {
+                    if(response.data.code === 10000){
+                        const categoryBooks = response.data.data
+                        const result = Tool.array2Tree(categoryBooks,0)
+                        level.value = []
+                        level.value = result
+                        console.log(level.value)
+                    }
+                    else{
+                        message.error(response.data.msg)
+                    }
+
+                })
+            }
          const books = ref('')
             onMounted(() => {
+                handleCategoryQuerry()
                 axios.get('/ebook/list',{
                     params:{
                         pageSize:100,
@@ -133,9 +114,9 @@
                 selectedKeys2: ref<string[]>(['1']),
                 openKeys: ref<string[]>(['sub1']),
                 books,
-                listData,
                 pagination,
                 actions,
+                level
             };
         }
 });
