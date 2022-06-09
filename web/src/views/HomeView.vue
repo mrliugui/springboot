@@ -7,8 +7,11 @@
                 v-model:openKeys="openKeys"
                 mode="inline"
                 style="height: 100%"
-
+                @click="handleClick"
         >
+          <a-menu-item key="welcome">
+                <span> Welcome</span>
+          </a-menu-item>
           <a-sub-menu v-for="item in level"
                       :key="item.id">
             <template #title>
@@ -22,7 +25,10 @@
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-        <a-list item-layout="vertical" size="large" :data-source="books" :grid="{ gutter: 30, column: 3 }">
+        <div v-show="isShowWelcome">
+          <p>in no case shall we lose in the future</p>
+        </div>
+        <a-list  v-show="!isShowWelcome" item-layout="vertical" size="large" :data-source="books" :grid="{ gutter: 30, column: 3 }">
         <template #renderItem="{ item }">
             <a-list-item key="item.name">
               <template #actions>
@@ -70,6 +76,7 @@
          MessageOutlined,
      },
         setup(){
+         const isShowWelcome = ref(true)
             const level = ref<any>()
             const handleCategoryQuerry = () => {
                 axios.get("/category/all").then((response) => {
@@ -86,18 +93,36 @@
 
                 })
             }
+            const handleClick = (values: any) => {
+             if(values.key === "welcome"){
+                 isShowWelcome.value = true
+             }else{
+                 isShowWelcome.value  = false
+                 axios.get('/ebook/list',{
+                     params:{
+                         pageSize:100,
+                         pageNum:1,
+                         category2Id:values.key
+                     }
+                 }).then((response) =>{
+                     console.log(response)
+                     books.value = response.data.data.content
+                 })
+             }
+             console.log(values)
+            }
          const books = ref('')
             onMounted(() => {
                 handleCategoryQuerry()
-                axios.get('/ebook/list',{
-                    params:{
-                        pageSize:100,
-                        pageNum:1
-                    }
-                }).then((response) =>{
-                    console.log(response)
-                    books.value = response.data.data.content
-                })
+                // axios.get('/ebook/list',{
+                //     params:{
+                //         pageSize:100,
+                //         pageNum:1
+                //     }
+                // }).then((response) =>{
+                //     console.log(response)
+                //     books.value = response.data.data.content
+                // })
             })
             const pagination = {
                 onChange: (page: number) => {
@@ -116,7 +141,9 @@
                 books,
                 pagination,
                 actions,
-                level
+                level,
+                isShowWelcome,
+                handleClick
             };
         }
 });

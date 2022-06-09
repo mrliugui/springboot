@@ -46,6 +46,8 @@ public class EbookServiceImpl implements EbookService {
         PageHelper.startPage(req.getPageNum(), req.getPageSize());
         if(!ObjectUtils.isEmpty(req.getName())){
             ebooks = ebookMapper.searchLike(req.getName());
+        }else if(!ObjectUtils.isEmpty(req.getCategory2Id())){
+            ebooks = ebookMapper.selectByCategoryId(req.getCategory2Id());
         }else{
             ebooks = ebookMapper.searchAllBook();
         }

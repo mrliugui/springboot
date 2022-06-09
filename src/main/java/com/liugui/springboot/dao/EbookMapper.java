@@ -12,6 +12,8 @@ public interface EbookMapper {
 
     List<Ebook> searchAllBook();
 
+    List<Ebook> selectByCategoryId(Long category2Id);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(Ebook record);
