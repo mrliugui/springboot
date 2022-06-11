@@ -1,13 +1,6 @@
 package com.liugui.springboot.vo;
 
 public class EbookVo {
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     private Long id;
 
@@ -27,6 +20,13 @@ public class EbookVo {
 
     private Integer voteCount;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
