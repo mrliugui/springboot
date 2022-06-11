@@ -71,20 +71,33 @@
 
                   </a-form-item>
                   <a-form-item :name="['doc', 'parent']" label="parent" :rules="[{required: true}]">
-                      <a-input-number v-model:value="formState.doc.parent" />
-                      <a-select
-                              ref="select"
-                              v-model:value="formState.doc.parent"
-                      >
-                          <a-select-option  :value="0">无</a-select-option>
-                          <a-select-option  v-for="item in level" :value="item.id"
-                                            :key="item.id"
-                                            :disabled="formState.doc.id === item.id">
-                              {{item.name}}
-                          </a-select-option>
-                      </a-select>
-
+                      <!--<a-input v-model:value="formState.doc.parent"/>-->
+                      <a-tree-select
+                          v-model:value="formState.doc.parent"
+                          show-search
+                          style="width: 100%"
+                          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                          placeholder="Please select"
+                          allow-clear
+                          tree-default-expand-all
+                          :tree-data="treeSelectData"
+                          :field-names="{title:'name',value:'id',key:'id',children:'children'}"
+                  ></a-tree-select>
                   </a-form-item>
+                      <!--<a-form-item :name="['doc', 'parent']" label="parent" :rules="[{required: true}]">-->
+                      <!--<a-select-->
+                              <!--ref="select"-->
+                              <!--v-model:value="formState.doc.parent"-->
+                      <!--&gt;-->
+                          <!--<a-select-option  :value="0">无</a-select-option>-->
+                          <!--<a-select-option  v-for="item in level" :value="item.id"-->
+                                            <!--:key="item.id"-->
+                                            <!--:disabled="formState.doc.id === item.id">-->
+                              <!--{{item.name}}-->
+                          <!--</a-select-option>-->
+                      <!--</a-select>-->
+
+                  <!--</a-form-item>-->
                   <a-form-item :name="['doc', 'sort']" label="Doc1" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.doc.sort" />
                   </a-form-item>
@@ -135,7 +148,7 @@
         },
     });
     const visible = ref(false);
-    const useModelConfirm =() => {
+    const useModelConfirm =(treeSelectData: any,setDisable: any,level: any) => {
         const modalText = ref("Content of the modal");
         const confirmLoading = ref(false);
         const showModal = () => {
@@ -153,6 +166,13 @@
         const exit = (record: any) => {
             visible.value = true;
            formState.doc = Tool.copy(record)
+            console.log(formState.doc)
+            // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
+            treeSelectData.value = Tool.copy(level.value);
+            setDisable(treeSelectData.value, record.id);
+
+            // 为选择树添加一个"无"
+            treeSelectData.value.unshift({id: 0, name: '无'});
         }
         return {
             modalText,
@@ -265,6 +285,39 @@
             const books = ref("")
             const loading = ref(false)
             const level = ref<any>()
+            // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
+            const treeSelectData = ref();
+            treeSelectData.value = [];
+            /**
+             * 将某节点及其子孙节点全部置为disabled
+             */
+            const setDisable = (treeSelectData: any, id: any) => {
+                // console.log(treeSelectData, id);
+                // 遍历数组，即遍历某一层节点
+                for (let i = 0; i < treeSelectData.length; i++) {
+                    const node = treeSelectData[i];
+                    if (node.id === id) {
+                        // 如果当前节点就是目标节点
+                        console.log("disabled", node);
+                        // 将目标节点设置为disabled
+                        node.disabled = true;
+
+                        // 遍历所有子节点，将所有子节点全部都加上disabled
+                        const children = node.children;
+                        if (Tool.isNotEmpty(children)) {
+                            for (let j = 0; j < children.length; j++) {
+                                setDisable(children, children[j].id)
+                            }
+                        }
+                    } else {
+                        // 如果当前节点不是目标节点，则到其子节点再找找看。
+                        const children = node.children;
+                        if (Tool.isNotEmpty(children)) {
+                            setDisable(children, id);
+                        }
+                    }
+                }
+            };
             const handleQuerry = () => {
                loading.value  = true
                axios.get("/doc/all").then((response) => {
@@ -275,6 +328,10 @@
                            level.value = []
                           level.value = result
                            console.log(level.value)
+                           // 父文档下拉框初始化，相当于点击新增
+                           treeSelectData.value = Tool.copy(level.value) || [];
+                           // 为选择树添加一个"无"
+                           treeSelectData.value.unshift({id: 0, name: '无'});
                        }
                        else{
                            message.error(response.data.msg)
@@ -288,8 +345,8 @@
             onMounted(() => {
             handleQuerry();
             })
-            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
-            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch} = useFormConfirm(handleQuerry,level)
+            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(treeSelectData,setDisable,level)
+            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch,book} = useFormConfirm(handleQuerry,level)
             return {
                 // data,
                 visible,
@@ -309,7 +366,9 @@
                 handleConfirm,
                 onSearch,
                 name,
-                level
+                level,
+                book,
+                treeSelectData
             };
         },
     });

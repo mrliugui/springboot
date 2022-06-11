@@ -68,7 +68,6 @@
               </a-form-item>
                   <a-form-item :name="['category', 'name']" label="name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.category.name" />
-
                   </a-form-item>
                   <a-form-item :name="['category', 'parent']" label="parent" :rules="[{required: true}]">
                       <a-input-number v-model:value="formState.category.parent" />
