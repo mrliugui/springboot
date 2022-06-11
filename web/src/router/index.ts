@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
         component: AdminView
     },
     {
-        path: '/admin/doc',
+        path: '/admin/doc/:id',
         name: 'doc',
         component: AdminDocView
     },

@@ -7,6 +7,7 @@ import com.liugui.springboot.req.UpdateDocReq;
 import com.liugui.springboot.service.DocService;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,7 +36,7 @@ public class DocController {
     }
 
     @PostMapping("/update")
-    public ApiResponse update(@RequestBody UpdateDocReq updateDocReq){
+    public ApiResponse update(@RequestBody @Validated UpdateDocReq updateDocReq){
         int i = docService.updateSelectiveDoc(updateDocReq);
         if(i!=0){
             return ApiResponse.success();

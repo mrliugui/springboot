@@ -5,10 +5,11 @@ import java.io.Serializable;
 
 public class UpdateDocReq implements Serializable {
     private Long id;
-    @NotNull(message = "书本id不能为空")
-    private Long ebookId;
     @NotNull(message = "父节点不能为空")
     private Long parent;
+
+    @NotNull(message = "书本id不能为空")
+    private Long ebookId;
 
     @NotNull(message = "名称不能为空")
     private String name;

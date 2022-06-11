@@ -63,13 +63,14 @@
                       name="nest-messages"
                       :validate-messages="validateMessages"
                       @finish="onFinish"
-              >   <a-form-item :name="['doc', 'id']" label="id" v-show="false">
-                  <a-input v-model:value="formState.doc.id" />
-              </a-form-item>
+              >   <a-form-item :name="['doc', 'ebookId']" label="ebookId" v-show="false">
+                  <a-input v-model:value="formState.doc.ebookId" />
+                  </a-form-item>
+
                   <a-form-item :name="['doc', 'name']" label="name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.doc.name" />
-
                   </a-form-item>
+
                   <a-form-item :name="['doc', 'parent']" label="parent" :rules="[{required: true}]">
                       <!--<a-input v-model:value="formState.doc.parent"/>-->
                       <a-tree-select
@@ -98,7 +99,7 @@
                       <!--</a-select>-->
 
                   <!--</a-form-item>-->
-                  <a-form-item :name="['doc', 'sort']" label="Doc1" :rules="[{type:'number',min: 0, max: 10}]">
+                  <a-form-item :name="['doc', 'sort']" label="sort" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.doc.sort" />
                   </a-form-item>
                   <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
@@ -113,6 +114,7 @@
 <script lang="ts">
     import {DownOutlined, SmileOutlined} from '@ant-design/icons-vue';
     import {defineComponent, onMounted, reactive, ref} from 'vue';
+    import {useRoute} from 'vue-router'
     import axios from "axios";
     import {message} from "ant-design-vue";
     import {Tool} from "../../util/tool";
@@ -142,6 +144,7 @@
     let formState = reactive({
         doc: {
             id:'',
+            ebookId:'',
             name: '',
             parent:'',
             sort:''
@@ -184,6 +187,7 @@
         };
     }
     const useFormConfirm = (handleQuerry: any, level: any) =>{
+        const route = useRoute()
         const book = ref('')
            const name = ref("")
             const layout = {
@@ -191,13 +195,16 @@
                 wrapperCol: { span: 16 },
             };
             const add = () => {
+                console.log(route)
                 visible.value  =true
                 formState.doc = {
-                    id:'',
+                    id: '',
+                    ebookId:route.params.id[0],
                     name: '',
                     parent:'',
                     sort:''
                 }
+
             }
 
 
@@ -214,10 +221,11 @@
 
             const onFinish = async (values: any) => {
                 const { doc } = reactive(values)
-                console.log(values)
+                console.log("values:{}",values)
 
                 const data = {
                     "id": doc.id,
+                    "ebookId":doc.ebookId,
                     "name": doc.name,
                     "parent": doc.parent,
                     "sort": doc.sort,
@@ -232,6 +240,7 @@
                   if(response.data.code === 10000){
                       visible.value = false
                       message.success("更新成功")
+                      handleQuerry()
                   }
                   else{
                       message.error("更新失败")
@@ -241,6 +250,7 @@
                 }
             };
             const handleConfirm = (id: number) =>{
+                console.log(id)
                 axios.delete(`/doc/delete/${id}`).then(
                     (response)=>{
                        if(response.data.code === 10000){

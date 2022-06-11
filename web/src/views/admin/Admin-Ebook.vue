@@ -53,6 +53,10 @@
             <template v-else-if="column.key === 'action'">
         <span>
           <a-space>
+              <router-link :to="'/admin/doc/'+record.id">
+          <a-button type="primary" size="large">文档管理</a-button>
+              </router-link>
+
           <a-button type="primary" size="large" @click="exit(record)">编辑</a-button>
                <a-popconfirm
                        title="你确认删除这本书籍吗？"
