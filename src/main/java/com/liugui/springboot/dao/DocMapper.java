@@ -21,4 +21,6 @@ public interface DocMapper {
     int updateByPrimaryKeySelective(Doc record);
 
     int updateByPrimaryKey(Doc record);
+
+    int deleteByIds(List<String> list);
 }

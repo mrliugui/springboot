@@ -102,6 +102,23 @@
                   <a-form-item :name="['doc', 'sort']" label="sort" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.doc.sort" />
                   </a-form-item>
+                  <a-form-item :name="['doc', 'sort']" label="sort" >
+                      <div style="border: 1px solid #ccc">
+                          <Toolbar
+                                  style="border-bottom: 1px solid #ccc"
+                                  :editor="editorRef"
+                                  :defaultConfig="toolbarConfig"
+                                  :mode="mode"
+                          />
+                          <Editor
+                                  style="height: 100px; overflow-y: hidden;"
+                                  v-model="valueHtml"
+                                  :defaultConfig="editorConfig"
+                                  :mode="mode"
+                                  @onCreated="handleCreated"
+                          />
+                      </div>
+                  </a-form-item>
                   <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
                       <a-button type="primary" html-type="submit"
                       >Submit</a-button>
@@ -113,11 +130,13 @@
 </template>
 <script lang="ts">
     import {DownOutlined, SmileOutlined} from '@ant-design/icons-vue';
-    import {defineComponent, onMounted, reactive, ref} from 'vue';
+    import {defineComponent, onBeforeUnmount, onMounted, reactive, ref, shallowRef,} from 'vue';
     import {useRoute} from 'vue-router'
     import axios from "axios";
     import {message} from "ant-design-vue";
     import {Tool} from "../../util/tool";
+    import '@wangeditor/editor/dist/css/style.css' // 引入 css
+    import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 
     const columns = [
 
@@ -249,9 +268,46 @@
                     message.error("找不到该页面")
                 }
             };
+        /**
+         * 将某节点及其子孙节点全部置为disabled
+         */
+        let ids: Array<string> = []
+        const getDeleteIds = (treeSelectData: any, id: any) => {
+            // console.log(treeSelectData, id);
+            // 遍历数组，即遍历某一层节点
+            for (let i = 0; i < treeSelectData.length; i++) {
+                const node = treeSelectData[i];
+                if (node.id === id) {
+                    // 如果当前节点就是目标节点
+                    console.log("disabled", node);
+                    // 将目标节点设置为disabled
+                    // node.disabled = true;
+                    //将符合情况的子节点都push入父节点
+                    ids.push(id)
+                    // 遍历所有子节点
+                    const children = node.children;
+                    if (Tool.isNotEmpty(children)) {
+                        for (let j = 0; j < children.length; j++) {
+                            getDeleteIds(children, children[j].id)
+                        }
+                    }
+                } else {
+                    // 如果当前节点不是目标节点，则到其子节点再找找看。
+                    const children = node.children;
+                    if (Tool.isNotEmpty(children)) {
+                        getDeleteIds(children, id);
+                    }
+                }
+            }
+        };
             const handleConfirm = (id: number) =>{
                 console.log(id)
-                axios.delete(`/doc/delete/${id}`).then(
+                getDeleteIds(level.value,id)
+                // console.log(typeof ids.join(","))
+                axios.delete(`/doc/delete/`,{data:{
+                    ids:ids.join(",")
+                    }}
+            ).then(
                     (response)=>{
                        if(response.data.code === 10000){
                            handleQuerry();
@@ -261,6 +317,7 @@
                        }
                     }
                 )
+                ids=[]
             }
             function onSearch(searchValue: string){
                 axios.get("/doc/list",{params:{name:searchValue}}).then(
@@ -290,6 +347,7 @@
         components: {
             SmileOutlined,
             DownOutlined,
+            Editor, Toolbar
         },
         setup() {
             const books = ref("")
@@ -349,6 +407,32 @@
 
                })
             }
+
+            // 编辑器实例，必须用 shallowRef
+            const editorRef = shallowRef()
+
+            // 内容 HTML
+            const valueHtml = ref('<p>hello</p>')
+
+            // 模拟 ajax 异步获取内容
+                setTimeout(() => {
+                valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
+            }, 1500)
+
+            const toolbarConfig = {}
+            const editorConfig = { placeholder: '请输入内容...' }
+
+            // 组件销毁时，也及时销毁编辑器
+            onBeforeUnmount(() => {
+                const editor = editorRef.value
+                if (editor == null) return
+                editor.destroy()
+            })
+
+            const handleCreated = (editor: any) => {
+                editorRef.value = editor // 记录 editor 实例，重要！
+            }
+
             const handleChange = () => {
              handleQuerry()
             }
@@ -378,7 +462,14 @@
                 name,
                 level,
                 book,
-                treeSelectData
+                treeSelectData,
+
+                editorRef,
+                valueHtml,
+                mode: 'default', // 或 'simple'
+                toolbarConfig,
+                editorConfig,
+                handleCreated
             };
         },
     });

@@ -66,6 +66,12 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
+    public int deleteByIds(List<String> ids) {
+        int i=docMapper.deleteByIds(ids);
+        return i;
+    }
+
+    @Override
     public int updateSelectiveDoc(UpdateDocReq updateDocReq){
         if(!ObjectUtils.isEmpty(docMapper.selectByPrimaryKey(updateDocReq.getId()))){
             Doc newBook = CopyUtil.copy(updateDocReq, Doc.class);

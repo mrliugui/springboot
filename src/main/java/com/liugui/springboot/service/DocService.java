@@ -14,4 +14,5 @@ public interface DocService {
     int updateSelectiveDoc(UpdateDocReq updateDocReq);
     int deleteById(Long id);
     List<DocVo> all();
+    int deleteByIds(List<String> ids);
 }

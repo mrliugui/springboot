@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -49,6 +50,17 @@ public class DocController {
     @DeleteMapping("/delete/{id}")
     public ApiResponse delete(@PathVariable("id")Long id){
         int i = docService.deleteById(id);
+        if(i!=0){
+            return ApiResponse.success();
+        }
+        else{
+            return ApiResponse.error(ExceptionEnum.DELETE_EXCEPTION);
+        }
+    }  @DeleteMapping("/delete")
+    public ApiResponse deleteTreeData(@RequestBody String ids) {
+      ids.substring(ids.indexOf(";"),ids.lastIndexOf("}"));
+        List<String> list = Arrays.asList(ids);
+        int i = docService.deleteByIds(list);
         if(i!=0){
             return ApiResponse.success();
         }
