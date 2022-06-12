@@ -14,6 +14,9 @@ public class UpdateDocReq implements Serializable {
     @NotNull(message = "名称不能为空")
     private String name;
 
+    @NotNull(message = "内容不能为空")
+    private String content;
+
     @NotNull(message = "顺序不能为空")
     private Integer sort;
 
@@ -49,6 +52,14 @@ public class UpdateDocReq implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setName(String name) {

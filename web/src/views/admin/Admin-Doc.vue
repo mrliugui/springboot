@@ -102,7 +102,8 @@
                   <a-form-item :name="['doc', 'sort']" label="sort" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.doc.sort" />
                   </a-form-item>
-                  <a-form-item :name="['doc', 'sort']" label="sort" >
+                  <a-form-item :name="['doc', 'sort']" label="content" :layout="{ labelCol: { span: 4 },wrapperCol: { span: 16 },
+            }">
                       <div style="border: 1px solid #ccc">
                           <Toolbar
                                   style="border-bottom: 1px solid #ccc"
@@ -170,7 +171,7 @@
         },
     });
     const visible = ref(false);
-    const useModelConfirm =(treeSelectData: any,setDisable: any,level: any) => {
+    const useModelConfirm =(treeSelectData: any,setDisable: any,level: any,handleQuerryContent: any,valueHtml: any) => {
         const modalText = ref("Content of the modal");
         const confirmLoading = ref(false);
         const showModal = () => {
@@ -186,8 +187,10 @@
             }, 2000);
         }
         const exit = (record: any) => {
+            valueHtml.value="";
             visible.value = true;
-           formState.doc = Tool.copy(record)
+            formState.doc = Tool.copy(record)
+            handleQuerryContent(record.id)
             console.log(formState.doc)
             // 不能选择当前节点及其所有子孙节点，作为父节点，会使树断开
             treeSelectData.value = Tool.copy(level.value);
@@ -205,15 +208,16 @@
             exit,
         };
     }
-    const useFormConfirm = (handleQuerry: any, level: any) =>{
+    const useFormConfirm = (handleQuerry: any, level: any,valueHtml: any) =>{
         const route = useRoute()
         const book = ref('')
            const name = ref("")
             const layout = {
-                labelCol: { span: 8 },
+                labelCol: { span: 4 },
                 wrapperCol: { span: 16 },
             };
             const add = () => {
+                valueHtml.value=""
                 console.log(route)
                 visible.value  =true
                 formState.doc = {
@@ -248,6 +252,7 @@
                     "name": doc.name,
                     "parent": doc.parent,
                     "sort": doc.sort,
+                    "content":valueHtml.value
                 }
                 console.log(data)
                 try{
@@ -412,12 +417,12 @@
             const editorRef = shallowRef()
 
             // 内容 HTML
-            const valueHtml = ref('<p>hello</p>')
+            const valueHtml = ref()
 
-            // 模拟 ajax 异步获取内容
-                setTimeout(() => {
-                valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
-            }, 1500)
+            // // 模拟 ajax 异步获取内容
+            //     setTimeout(() => {
+            //     valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
+            // }, 1500)
 
             const toolbarConfig = {}
             const editorConfig = { placeholder: '请输入内容...' }
@@ -436,11 +441,22 @@
             const handleChange = () => {
              handleQuerry()
             }
+            const handleQuerryContent = (id: any) => {
+                axios.get("/doc/content/"+id).then((response) => {
+                    if(response.data.code === 10000){
+                    valueHtml.value=response.data.data
+                    }
+                    else{
+                        message.error(response.data.msg)
+                    }
+
+                })
+            };
             onMounted(() => {
             handleQuerry();
             })
-            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(treeSelectData,setDisable,level)
-            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch,book} = useFormConfirm(handleQuerry,level)
+            const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm(treeSelectData,setDisable,level,handleQuerryContent,valueHtml)
+            const { onFinish, layout,name, validateMessages, add,handleConfirm, onSearch,book} = useFormConfirm(handleQuerry,level,valueHtml)
             return {
                 // data,
                 visible,

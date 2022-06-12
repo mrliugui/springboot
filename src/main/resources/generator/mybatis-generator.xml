@@ -49,7 +49,7 @@
         </javaClientGenerator>
 
         <!-- 要生成哪些表 可以同时填写多个table-->
-        <table tableName="doc"
+        <table tableName="content"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

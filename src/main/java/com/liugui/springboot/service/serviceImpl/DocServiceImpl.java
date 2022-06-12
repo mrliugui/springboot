@@ -2,7 +2,9 @@ package com.liugui.springboot.service.serviceImpl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.liugui.springboot.dao.ContentMapper;
 import com.liugui.springboot.dao.DocMapper;
+import com.liugui.springboot.pojo.Content;
 import com.liugui.springboot.pojo.Doc;
 import com.liugui.springboot.req.DocReq;
 import com.liugui.springboot.req.UpdateDocReq;
@@ -25,9 +27,11 @@ public class DocServiceImpl implements DocService {
     @Resource
     private DocMapper docMapper;
 
-
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private ContentMapper contentMapper;
 
     @Override
     public PageVo bookList(DocReq req)
@@ -72,11 +76,20 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
+    public String getContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        String contentStr  = content.getContent();
+        return contentStr;
+    }
+
+    @Override
     public int updateSelectiveDoc(UpdateDocReq updateDocReq){
         if(!ObjectUtils.isEmpty(docMapper.selectByPrimaryKey(updateDocReq.getId()))){
             Doc newBook = CopyUtil.copy(updateDocReq, Doc.class);
+            Content newContent = CopyUtil.copy(updateDocReq, Content.class);
             logger.info("更新的书籍id{}-名称{}",newBook.getId(),newBook.getName());
             int i = docMapper.updateByPrimaryKeySelective(newBook);
+            contentMapper.insertSelective(newContent);
             return i;
         }else{
 //            long id = UUID.randomUUID().toString().
@@ -84,6 +97,8 @@ public class DocServiceImpl implements DocService {
             updateDocReq.setId(id);
             Doc doc = CopyUtil.copy(updateDocReq, Doc.class);
             int i = docMapper.insertSelective(doc);
+            Content content = CopyUtil.copy(updateDocReq, Content.class);
+            contentMapper.insertSelective(content);
             return i;
         }
     }

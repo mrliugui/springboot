@@ -68,4 +68,14 @@ public class DocController {
             return ApiResponse.error(ExceptionEnum.DELETE_EXCEPTION);
         }
     }
+    @GetMapping("/content/{id}")
+    public ApiResponse getContent(@PathVariable("id")Long id){
+        String content = docService.getContent(id);
+        if(content != null && !content.equals("")){
+            return ApiResponse.success(content);
+        }
+        else{
+            return ApiResponse.error(ExceptionEnum.QUERRY_EXCEPTION);
+        }
+    }
 }
