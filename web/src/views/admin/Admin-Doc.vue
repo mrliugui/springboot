@@ -274,7 +274,7 @@
                 }
             };
         /**
-         * 将某节点及其子孙节点全部置为disabled
+         * 找一个id一下的所有子节点
          */
         let ids: Array<string> = []
         const getDeleteIds = (treeSelectData: any, id: any) => {
