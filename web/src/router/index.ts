@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
         component: testVue
     },
     {
-        path: '/admin/doc/:id',
+        path: '/admin/doc/',
         name: 'doc',
         component: AdminDocView
     },

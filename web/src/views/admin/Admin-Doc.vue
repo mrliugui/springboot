@@ -32,6 +32,8 @@
         <span>
           <a-space>
           <a-button type="primary" size="large" @click="exit(record)">编辑</a-button>
+              <a-button type="primary" size="large" @click="showDrawer(record.id)">内容预览</a-button>
+
                <a-popconfirm
                        title="你确认删除这本书籍吗？"
                        ok-text="是"
@@ -128,6 +130,15 @@
       </a-modal>
     </div>
   </template>
+    <a-drawer
+            v-model:visible="visible1"
+            class="custom-class"
+            title="文档详细内容"
+            placement="right"
+            @after-visible-change="afterVisibleChange"
+    >
+        <div :innerHTML="innerHTML"></div>
+    </a-drawer>
 </template>
 <script lang="ts">
     import {DownOutlined, SmileOutlined} from '@ant-design/icons-vue';
@@ -355,9 +366,32 @@
             Editor, Toolbar
         },
         setup() {
+            const visible1 = ref<boolean>();
+            visible1.value = false
+            let innerHTML = ref();
+            innerHTML.value = "很遗憾，该文档没有预览内容"
+            const afterVisibleChange = (bool: boolean) => {
+                console.log('visible', bool);
+            };
+
+            const showDrawer = (id: any) => {
+                innerHTML.value={}
+                visible1.value = true;
+                axios.get("/content/detail",{params:{
+                    id:id
+                    }}).then((response) => {
+                        console.log(response)
+                     if(Tool.isEmpty(response.data.data)){
+                         innerHTML.value = response.data.msg
+                     }else{
+                         innerHTML.value = response.data.data.content
+                     }
+                })
+            };
             const books = ref("")
             const loading = ref(false)
             const level = ref<any>()
+            const route = useRoute()
             // 因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独声明一个响应式变量
             const treeSelectData = ref();
             treeSelectData.value = [];
@@ -393,9 +427,9 @@
             };
             const handleQuerry = () => {
                loading.value  = true
-               axios.get("/doc/all").then((response) => {
+               axios.get("/doc/all/"+route.query.ebookId).then((response) => {
+                   loading.value = false
                        if(response.data.code === 10000){
-                           loading.value = false
                            books.value = response.data.data
                           const result = Tool.array2Tree(books.value,0)
                            level.value = []
@@ -485,7 +519,12 @@
                 mode: 'default', // 或 'simple'
                 toolbarConfig,
                 editorConfig,
-                handleCreated
+                handleCreated,
+
+                visible1,
+                afterVisibleChange,
+                showDrawer,
+                innerHTML
             };
         },
     });
