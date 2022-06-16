@@ -62,12 +62,13 @@ public class DocServiceImpl implements DocService {
         return pageVo;
     }
     @Override
-    public List<DocVo> all() {
+    public List<DocVo> all(Long id) {
         List<Doc> docs=null;
-        docs = docMapper.searchAllBook();
+        docs = docMapper.searchBookByEbookId(id);
         List<DocVo> docVos=CopyUtil.copyList(docs,DocVo.class);
         return docVos;
     }
+
 
     @Override
     public int deleteByIds(List<String> ids) {

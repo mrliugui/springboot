@@ -24,9 +24,9 @@ public class DocController {
     private DocService docService;
 
 
-    @GetMapping("/all")
-    public ApiResponse getAll(){
-        List<DocVo> docVos = docService.all();
+    @GetMapping("/all/{ebookId}")
+    public ApiResponse getAll(@PathVariable Long ebookId){
+        List<DocVo> docVos = docService.all(ebookId);
         return ApiResponse.success(docVos);
     }
 

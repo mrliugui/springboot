@@ -10,6 +10,8 @@ public interface DocMapper {
 
     List<Doc> searchAllBook();
 
+    List<Doc> searchBookByEbookId(Long ebookId);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(Doc record);

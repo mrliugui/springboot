@@ -13,7 +13,7 @@ public interface DocService {
     PageVo bookList(DocReq req);
     int updateSelectiveDoc(UpdateDocReq updateDocReq);
     int deleteById(Long id);
-    List<DocVo> all();
+    List<DocVo> all(Long id);
     int deleteByIds(List<String> ids);
     String getContent(Long id);
 }
