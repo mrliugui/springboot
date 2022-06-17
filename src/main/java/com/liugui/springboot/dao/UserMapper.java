@@ -21,4 +21,6 @@ public interface UserMapper {
     List<User> searchLike(@Param("name") String name);
 
     List<User> searchAllBook();
+
+    List<User> selectByLoginName(String loginName);
 }

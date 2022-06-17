@@ -79,7 +79,7 @@
                   <a-input v-model:value="formState.user.id" />
               </a-form-item>
                   <a-form-item :name="['user', 'loginName']" label="LoginName" :rules="[{ required: true }]">
-                      <a-input v-model:value="formState.user.loginName" />
+                      <a-input v-model:value="formState.user.loginName" :disabled="formState.user.loginName!=''?true:false"/>
                   </a-form-item>
                   <a-form-item :name="['user', 'name']" label="Name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.user.name" />
@@ -195,7 +195,7 @@
                     id:'',
                     loginName:'',
                     name: '',
-                   password:'',
+                    password:'',
                 }
             }
 
@@ -237,7 +237,7 @@
                       })
                   }
                   else{
-                      message.error("更新失败")
+                      message.error(response.data.msg)
                   }
               })}catch(e){
                     message.error("找不到该页面")

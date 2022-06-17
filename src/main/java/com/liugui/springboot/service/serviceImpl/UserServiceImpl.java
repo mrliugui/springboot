@@ -3,6 +3,8 @@ package com.liugui.springboot.service.serviceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liugui.springboot.dao.UserMapper;
+import com.liugui.springboot.myEnum.BusinessException;
+import com.liugui.springboot.myEnum.ExceptionEnum;
 import com.liugui.springboot.pojo.User;
 import com.liugui.springboot.req.UpdateUserReq;
 import com.liugui.springboot.req.UserReq;
@@ -63,9 +65,13 @@ public class UserServiceImpl implements UserService {
         if(!ObjectUtils.isEmpty(userMapper.selectByPrimaryKey(updateUserReq.getId()))){
             User newBook = CopyUtil.copy(updateUserReq, User.class);
             logger.info("更新的书籍id{}-名称{}",newBook.getId(),newBook.getName());
+            newBook.setLoginName(null);
             int i = userMapper.updateByPrimaryKeySelective(newBook);
             return i;
         }else{
+            if(!ObjectUtils.isEmpty(userMapper.selectByLoginName(updateUserReq.getLoginName()))){
+                throw new BusinessException(ExceptionEnum.LOGIN_NAME_AGAIN);
+            }
 //            long id = UUID.randomUUID().toString().
             long id = snowFlake.nextId();
             updateUserReq.setId(id);
