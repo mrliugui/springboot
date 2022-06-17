@@ -16,6 +16,7 @@ import com.liugui.springboot.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -75,8 +76,9 @@ public class UserServiceImpl implements UserService {
 //            long id = UUID.randomUUID().toString().
             long id = snowFlake.nextId();
             updateUserReq.setId(id);
-            User User = CopyUtil.copy(updateUserReq, User.class);
-            int i = userMapper.insertSelective(User);
+            User user = CopyUtil.copy(updateUserReq, User.class);
+            user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+            int i = userMapper.insertSelective(user);
             return i;
         }
     }

@@ -79,7 +79,7 @@
                   <a-input v-model:value="formState.user.id" />
               </a-form-item>
                   <a-form-item :name="['user', 'loginName']" label="LoginName" :rules="[{ required: true }]">
-                      <a-input v-model:value="formState.user.loginName" :disabled="formState.user.loginName!=''?true:false"/>
+                      <a-input v-model:value="formState.user.loginName" :disabled="writeBoolean"/>
                   </a-form-item>
                   <a-form-item :name="['user', 'name']" label="Name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.user.name" />
@@ -103,6 +103,9 @@
     import axios from "axios";
     import {message} from "ant-design-vue";
     import {Tool} from "../../util/tool";
+
+    declare let hexMd5: any;
+    declare let KEY: any;
 
     const columns = [
         {
@@ -164,7 +167,7 @@
         };
     }
     const useFormConfirm = (handleQuerry: any,pagination: any,books: any,loading: any) =>{
-        const book = ref('')
+        let writeBoolean = ref(true)
         const name = ref("")
         // let category: any
         const level1 = ref<any>()
@@ -197,6 +200,7 @@
                     name: '',
                     password:'',
                 }
+                writeBoolean.value = false
             }
 
 
@@ -214,7 +218,7 @@
             const onFinish = async (values: any) => {
                 const { user } = reactive(values)
                 console.log(values)
-
+                user.loginName=hexMd5(user.loginName+KEY)
                 const data = {
                     "id": user.id,
                     "loginName":user.loginName,
@@ -288,6 +292,7 @@
                 handleConfirm,
                 onSearch,
                 level1,
+                writeBoolean
             };
         }
 
@@ -342,7 +347,7 @@
             const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
             const { onFinish, layout,name, validateMessages,
                 add,handleConfirm, onSearch,
-                level1} = useFormConfirm(handleQuerry,pagination,books,loading)
+                level1,writeBoolean} = useFormConfirm(handleQuerry,pagination,books,loading)
             onMounted(() => {
                 handleQuerry({
                     pageNum:1,
@@ -367,6 +372,7 @@
                 layout,
                 validateMessages,
                 add,
+                    writeBoolean,
                 handleConfirm,
                 onSearch,
                 name,
