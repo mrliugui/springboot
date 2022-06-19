@@ -43,6 +43,7 @@
             <template v-if="column.key === 'action'">
         <span>
           <a-space>
+          <a-button type="primary" size="large" @click="reset(record)">重置密码</a-button>
           <a-button type="primary" size="large" @click="exit(record)">编辑</a-button>
                <a-popconfirm
                        title="你确认删除这本用户吗？"
@@ -83,6 +84,29 @@
                   </a-form-item>
                   <a-form-item :name="['user', 'name']" label="Name" :rules="[{ required: true }]">
                       <a-input v-model:value="formState.user.name" />
+                  </a-form-item>
+                  <a-form-item :name="['user', 'password']" label="password" v-show="!formState.user.id" :rules="[{ required:true }]">
+                      <a-input v-model:value="formState.user.password" />
+                  </a-form-item>
+
+                  <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
+                      <a-button type="primary" html-type="submit"
+                      >Submit</a-button>
+                  </a-form-item>
+              </a-form>
+      </a-modal>
+        <a-modal
+              v-model:visible="visibleReset"
+              title="重置密码"
+      >
+              <a-form
+                      :model="formState"
+                      v-bind="layout"
+                      name="nest-messages"
+                      :validate-messages="validateMessages"
+                      @finish="onFinishReset"
+              >   <a-form-item :name="['user', 'id']" label="id" v-show="false">
+                      <a-input v-model:value="formState.user.id" />
                   </a-form-item>
                   <a-form-item :name="['user', 'password']" label="password" :rules="[{ required:true }]">
                       <a-input v-model:value="formState.user.password" />
@@ -138,6 +162,43 @@
     });
     const visible = ref(false);
     let categoryIds  = ref()
+    const useResetPassword = (handleQuerry: any,pagination: any) =>{
+        let visibleReset = ref(false)
+        const onFinishReset = async (values: any) => {
+            const { user } = reactive(values)
+            user.password=hexMd5(user.loginName+KEY)
+            const data = {
+                "id": user.id,
+                "password":user.password
+            }
+            try{
+                await axios.post("/user/resetPassword",data,
+                    { headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    }).then((response)=>{
+                    if(response.data.code === 10000){
+                        visibleReset.value = false
+                        message.success("更新成功")
+                        handleQuerry({
+                            pageNum:pagination.current,
+                            pageSize:pagination.defaultPageSize,
+                        })
+                    }
+                    else{
+                        message.error(response.data.msg)
+                    }
+                })}catch(e){
+                message.error("找不到该页面")
+            }
+        };
+        const reset = (record: any) => {
+            visibleReset.value = true;
+            formState.user = Tool.copy(record)
+            formState.user.password=""
+        }
+        return { reset,onFinishReset,visibleReset }
+    }
     const useModelConfirm =() => {
         const modalText = ref("Content of the modal");
         const confirmLoading = ref(false);
@@ -218,7 +279,7 @@
             const onFinish = async (values: any) => {
                 const { user } = reactive(values)
                 console.log(values)
-                user.loginName=hexMd5(user.loginName+KEY)
+                user.password=hexMd5(user.loginName+KEY)
                 const data = {
                     "id": user.id,
                     "loginName":user.loginName,
@@ -344,6 +405,7 @@
                  pageSize:pagination.pageSize
             })
             }
+            const { visibleReset, reset, onFinishReset } = useResetPassword(handleQuerry,pagination);
             const { modalText, confirmLoading, showModal, handleOk,exit} = useModelConfirm()
             const { onFinish, layout,name, validateMessages,
                 add,handleConfirm, onSearch,
@@ -378,6 +440,8 @@
                 name,
                     level1,
                     categoryIds,
+
+                    visibleReset, reset, onFinishReset
             };
         },
     });

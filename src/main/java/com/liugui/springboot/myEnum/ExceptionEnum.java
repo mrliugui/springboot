@@ -5,7 +5,8 @@ public enum ExceptionEnum {
     DELETE_EXCEPTION(10002,"删除失败"),
     QUERRY_EXCEPTION(10003,"查找失败"),
     GET_CONTENT_NULL(10004,"抱歉哦，该文档内容不存在"),
-    LOGIN_NAME_AGAIN(10005,"用户名重复")
+    LOGIN_NAME_AGAIN(10005,"用户名重复"),
+    LOGIN_ERROR(10006,"用户名不存在或登陆密码错误"),
     ;
     private Integer code;
     private String msg;

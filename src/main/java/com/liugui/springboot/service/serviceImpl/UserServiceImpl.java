@@ -6,17 +6,19 @@ import com.liugui.springboot.dao.UserMapper;
 import com.liugui.springboot.myEnum.BusinessException;
 import com.liugui.springboot.myEnum.ExceptionEnum;
 import com.liugui.springboot.pojo.User;
+import com.liugui.springboot.req.LoginReq;
+import com.liugui.springboot.req.ResetPasswordReq;
 import com.liugui.springboot.req.UpdateUserReq;
 import com.liugui.springboot.req.UserReq;
 import com.liugui.springboot.service.UserService;
 import com.liugui.springboot.util.CopyUtil;
 import com.liugui.springboot.util.SnowFlake;
+import com.liugui.springboot.vo.LoginUserVo;
 import com.liugui.springboot.vo.PageVo;
 import com.liugui.springboot.vo.UserVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -77,7 +79,7 @@ public class UserServiceImpl implements UserService {
             long id = snowFlake.nextId();
             updateUserReq.setId(id);
             User user = CopyUtil.copy(updateUserReq, User.class);
-            user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+//            user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
             int i = userMapper.insertSelective(user);
             return i;
         }
@@ -87,5 +89,31 @@ public class UserServiceImpl implements UserService {
     public int deleteById(Long id) {
         int i = userMapper.deleteByPrimaryKey(id);
         return i;
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordReq resetPasswordReq) {
+        User user = userMapper.selectByPrimaryKey(resetPasswordReq.getId());
+        if(user!=null){
+            User resetPasswordUser = CopyUtil.copy(resetPasswordReq, User.class);
+            userMapper.updateByPrimaryKeySelective(resetPasswordUser);
+        }
+    }
+
+    @Override
+    public LoginUserVo login(LoginReq loginReq) {
+       User user = userMapper.selectByLoginName(loginReq.getLoginName());
+        if(ObjectUtils.isEmpty(user)){
+            logger.info("用户名不存在：{}",loginReq.getLoginName());
+            throw new BusinessException(ExceptionEnum.LOGIN_ERROR);
+        }else{
+            if(user.getPassword().equals(loginReq.getPassword())){
+                LoginUserVo loginUserVo = CopyUtil.copy(user, LoginUserVo.class);
+                return loginUserVo;
+            }else{
+                logger.info("登录密码错误：{}",loginReq.getPassword());
+                throw new BusinessException(ExceptionEnum.LOGIN_ERROR);
+            }
+        }
     }
 }

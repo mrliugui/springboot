@@ -3,6 +3,7 @@ package com.liugui.springboot.pojo;
 import java.io.Serializable;
 
 public class User implements Serializable {
+
     private Long id;
 
     private String loginName;

@@ -1,6 +1,7 @@
 <template>
     <a-layout-header class="header">
         <div class="logo" ></div>
+        <a><span @click="handleLogin" style="color:rgba(255, 255, 255, 0.65);float: right;">登录</span></a>
         <a-menu
                 v-model:selectedKeys="selectedKeys1"
                 theme="dark"
@@ -13,16 +14,103 @@
             <a-menu-item key="4"><router-link to="/admin/category">分类管理</router-link></a-menu-item>
             <a-menu-item key="5"><router-link to="/about">我的</router-link></a-menu-item>
         </a-menu>
-    </a-layout-header>
-</template>about
-<script lang="ts">
-    import {defineComponent, ref} from 'vue';
 
+    </a-layout-header>
+    <a-modal v-model:visible="loginShow" title=" 登录框" @ok="handleOk" :footer="null">
+        <a-form
+                :model="formState"
+                name="登录"
+                :label-col="{ span: 8 }"
+                :wrapper-col="{ span: 12 }"
+                @finish="onFinish"
+                @finishFailed="onFinishFailed"
+        >
+            <a-form-item
+                    label="Username"
+                    name="username"
+                    :rules="[{ required: true, message: 'Please input your username!' }]"
+            >
+                <a-input v-model:value="formState.username" />
+            </a-form-item>
+
+            <a-form-item
+                    label="Password"
+                    name="password"
+                    :rules="[{ required: true, message: 'Please input your password!' }]"
+            >
+                <a-input-password v-model:value="formState.password" />
+            </a-form-item>
+
+            <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
+                <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+            </a-form-item>
+
+            <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+                <a-button type="primary" html-type="submit">Submit</a-button>
+            </a-form-item>
+        </a-form>
+    </a-modal>
+
+</template>
+<script lang="ts">
+    import {defineComponent, reactive, ref} from 'vue';
+    import axios from "axios";
+    import {message} from "ant-design-vue";
+
+    interface FormState {
+        username: string;
+        password: string;
+        remember: boolean;
+    }
     export default defineComponent({
         name: 'the-header',
         setup () {
+            const loginShow = ref(false);
+            let formState = reactive<FormState>({
+                username: '',
+                password: '',
+                remember: true,
+            });
+            const handleLogin = () => {
+                loginShow.value=true;
+                formState.password=""
+                formState.username=""
+            }
+            const onFinish = (values: any) => {
+                console.log('Success:', values);
+                const data = {
+                    "username": values.username,
+                    "password": values.password,
+                }
+                axios.post("/user/login",data,{
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then((response) => {
+                   if(response.data.code===10000){
+                       loginShow.value = false
+                       if(!values.remember){
+                           formState.username=""
+                           formState.password=""
+                       }
+                       message.success("登录成功")
+                   }else{
+                       message.error(response.data.msg);
+                   }
+                })
+            };
+
+            const onFinishFailed = (errorInfo: any) => {
+                console.log('Failed:', errorInfo);
+            };
            return{
-                selectedKeys1: ref<string[]>(['1'])
+                selectedKeys1: ref<string[]>(['1']),
+               formState,
+               onFinish,
+               onFinishFailed,
+
+               handleLogin,
+               loginShow
             }
         }
     });

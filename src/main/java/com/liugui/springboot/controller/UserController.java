@@ -2,6 +2,8 @@ package com.liugui.springboot.controller;
 
 import com.liugui.springboot.common.ApiResponse;
 import com.liugui.springboot.myEnum.ExceptionEnum;
+import com.liugui.springboot.req.LoginReq;
+import com.liugui.springboot.req.ResetPasswordReq;
 import com.liugui.springboot.req.UpdateUserReq;
 import com.liugui.springboot.req.UserReq;
 import com.liugui.springboot.service.UserService;
@@ -20,6 +22,16 @@ public class UserController {
     private UserService userService;
 
 
+    @PostMapping("/resetPassword")
+    public ApiResponse resetPassword(@Valid @RequestBody ResetPasswordReq resetPasswordReq){
+         userService.resetPassword(resetPasswordReq);
+        return ApiResponse.success();
+    }
+    @PostMapping("/login")
+    public ApiResponse login(@Valid @RequestBody LoginReq loginReq){
+         userService.login(loginReq);
+        return ApiResponse.success();
+    }
     @GetMapping("/list")
     public ApiResponse getAll(@Valid UserReq req){
         PageVo pageVo=userService.bookList(req);

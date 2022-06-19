@@ -22,5 +22,5 @@ public interface UserMapper {
 
     List<User> searchAllBook();
 
-    List<User> selectByLoginName(String loginName);
+    User selectByLoginName(String loginName);
 }
