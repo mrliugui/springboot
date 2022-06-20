@@ -22,6 +22,8 @@ public class UserController {
     @Resource
     private UserService userService;
 
+//    @Resource
+//    private RedisTemplate redisTemplate;
 
     @PostMapping("/resetPassword")
     public ApiResponse resetPassword(@Valid @RequestBody ResetPasswordReq resetPasswordReq){
@@ -32,6 +34,11 @@ public class UserController {
     public ApiResponse login(@Valid @RequestBody LoginReq loginReq){
         LoginUserVo loginUserVo = userService.login(loginReq);
         return ApiResponse.success(loginUserVo);
+    }
+    @GetMapping("/logout/{token}")
+    public ApiResponse delete(@PathVariable("token")String token){
+//        Boolean bool = redisTemplate.delete(token);
+        return ApiResponse.success();
     }
     @GetMapping("/list")
     public ApiResponse getAll(@Valid UserReq req){

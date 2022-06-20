@@ -2,7 +2,15 @@
     <a-layout-header class="header">
         <div class="logo" ></div>
         <a><span v-show="!userSession.name" @click="handleLogin" style="color:rgba(255, 255, 255, 0.65);float: right;">登录</span></a>
-        <a><span v-show="userSession.name" style="color:rgba(255, 255, 255, 0.65);float: right;">欢迎您:{{userSession.name}}</span></a>
+        <a-popconfirm
+                title="您确定退出登录吗？"
+                ok-text="是"
+                cancel-text="否"
+                @confirm="logout"
+        >
+            <a style="float: right;" ><span v-show="userSession.name" style="color:rgba(255, 255, 255, 0.65);padding-left: 15px;margin-right: 5px">退出登录</span></a>
+        </a-popconfirm>
+        <a><span v-show="userSession.name" style="color:rgba(255, 255, 255, 0.65);float: right;">用户:{{userSession.name}}</span></a>
         <a-menu
                 v-model:selectedKeys="selectedKeys1"
                 theme="dark"
@@ -69,13 +77,26 @@
     export default defineComponent({
         name: 'the-header',
         setup () {
-            const loginShow = ref(false);
             const store = useStore();
+            const userSession = computed(() => store.state.user)
+            const loginShow = ref(false);
             let formState = reactive<FormState>({
                 username: '',
                 password: '',
                 remember: true,
             });
+            const logout = () =>{
+                axios.get("/user/logout/"+store.state.user.token).then(
+                    (response) => {
+                        if(response.data.code === 10000){
+                            console.log("用户名称{}",store.state.user.name)
+                            //赋值空对象，不赋值null，是因为避免空指针异常
+                            store.commit("setUser",{})
+                            message.success("退出登录成功")
+                        }
+                    }
+                )
+            }
             const handleLogin = () => {
                 loginShow.value=true;
                 formState.password="liugui"
@@ -103,7 +124,6 @@
                    }
                 })
             };
-           const userSession = computed(() => store.state.user)
            const onFinishFailed = (errorInfo: any) => {
                 console.log('Failed:', errorInfo);
             };
@@ -117,7 +137,9 @@
                loginShow,
 
                user,
-               userSession
+               userSession,
+
+               logout
             }
         }
     });

@@ -2,9 +2,16 @@ import {createStore} from 'vuex'
 
 declare let SessionStorage: any;
 const KEY = "USER";
+// const getUser = (KEY: any) => {
+//     try {
+//         return JSON.parse(sessionStorage.KEY)
+//     } catch (e) {
+//         return {}
+//     }
+// }
 export default createStore({
   state: {
-    user:SessionStorage.get(KEY)||{}
+    user:SessionStorage.get(KEY) || {}
   },
   getters: {
 //     getUser:(state) => {
