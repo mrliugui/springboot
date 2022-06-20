@@ -169,7 +169,7 @@
             user.password=hexMd5(user.loginName+KEY)
             const data = {
                 "id": user.id,
-                "password":user.password
+                "password":user.password,
             }
             try{
                 await axios.post("/user/resetPassword",data,

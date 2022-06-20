@@ -1,5 +1,7 @@
 package com.liugui.springboot.service.serviceImpl;
 
+//import com.alibaba.fastjson.JSONObject;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liugui.springboot.dao.UserMapper;
@@ -24,6 +26,8 @@ import org.springframework.util.ObjectUtils;
 import javax.annotation.Resource;
 import java.util.List;
 
+//import org.springframework.data.redis.core.RedisTemplate;
+
 @Service
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -33,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private SnowFlake snowFlake;
+
+//    @Resource
+//    private RedisTemplate redisTemplate;
 
     @Override
     public PageVo bookList(UserReq req)
@@ -109,6 +116,9 @@ public class UserServiceImpl implements UserService {
         }else{
             if(user.getPassword().equals(loginReq.getPassword())){
                 LoginUserVo loginUserVo = CopyUtil.copy(user, LoginUserVo.class);
+                String token = snowFlake.nextId()+"";
+//                redisTemplate.opsForValue().set(token, JSONObject.toJSON(loginUserVo),24, TimeUnit.HOURS);
+                loginUserVo.setToken(token);
                 return loginUserVo;
             }else{
                 logger.info("登录密码错误：{}",loginReq.getPassword());

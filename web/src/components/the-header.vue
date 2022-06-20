@@ -1,7 +1,8 @@
 <template>
     <a-layout-header class="header">
         <div class="logo" ></div>
-        <a><span @click="handleLogin" style="color:rgba(255, 255, 255, 0.65);float: right;">登录</span></a>
+        <a><span v-show="!userSession.name" @click="handleLogin" style="color:rgba(255, 255, 255, 0.65);float: right;">登录</span></a>
+        <a><span v-show="userSession.name" style="color:rgba(255, 255, 255, 0.65);float: right;">欢迎您:{{userSession.name}}</span></a>
         <a-menu
                 v-model:selectedKeys="selectedKeys1"
                 theme="dark"
@@ -53,19 +54,23 @@
 
 </template>
 <script lang="ts">
-    import {defineComponent, reactive, ref} from 'vue';
+    import {computed, defineComponent, reactive, ref} from 'vue';
     import axios from "axios";
     import {message} from "ant-design-vue";
+    import {useStore} from "vuex";
 
     interface FormState {
         username: string;
         password: string;
         remember: boolean;
     }
+    const user = ref();
+    user.value = {};
     export default defineComponent({
         name: 'the-header',
         setup () {
             const loginShow = ref(false);
+            const store = useStore();
             let formState = reactive<FormState>({
                 username: '',
                 password: '',
@@ -73,8 +78,8 @@
             });
             const handleLogin = () => {
                 loginShow.value=true;
-                formState.password=""
-                formState.username=""
+                formState.password="liugui"
+                formState.username="liugui1"
             }
             const onFinish = (values: any) => {
                 console.log('Success:', values);
@@ -89,18 +94,17 @@
                 }).then((response) => {
                    if(response.data.code===10000){
                        loginShow.value = false
-                       if(!values.remember){
-                           formState.username=""
-                           formState.password=""
-                       }
+                       user.value = response.data.data;
+                       console.log(user.value)
+                       store.commit("setUser",user.value);
                        message.success("登录成功")
                    }else{
                        message.error(response.data.msg);
                    }
                 })
             };
-
-            const onFinishFailed = (errorInfo: any) => {
+           const userSession = computed(() => store.state.user)
+           const onFinishFailed = (errorInfo: any) => {
                 console.log('Failed:', errorInfo);
             };
            return{
@@ -110,7 +114,10 @@
                onFinishFailed,
 
                handleLogin,
-               loginShow
+               loginShow,
+
+               user,
+               userSession
             }
         }
     });

@@ -1,5 +1,6 @@
 package com.liugui.springboot.req;
 
+
 import javax.validation.constraints.NotNull;
 
 public class ResetPasswordReq {
@@ -9,6 +10,7 @@ public class ResetPasswordReq {
 
     @NotNull(message = "重置新密码不能为空")
     private String password;
+
 
     public Long getId() {
         return id;
@@ -25,6 +27,7 @@ public class ResetPasswordReq {
     public void setPassword(String password) {
         this.password = password;
     }
+
 
     @Override
     public String toString() {

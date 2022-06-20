@@ -7,6 +7,7 @@ import com.liugui.springboot.req.ResetPasswordReq;
 import com.liugui.springboot.req.UpdateUserReq;
 import com.liugui.springboot.req.UserReq;
 import com.liugui.springboot.service.UserService;
+import com.liugui.springboot.vo.LoginUserVo;
 import com.liugui.springboot.vo.PageVo;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,8 @@ public class UserController {
     }
     @PostMapping("/login")
     public ApiResponse login(@Valid @RequestBody LoginReq loginReq){
-         userService.login(loginReq);
-        return ApiResponse.success();
+        LoginUserVo loginUserVo = userService.login(loginReq);
+        return ApiResponse.success(loginUserVo);
     }
     @GetMapping("/list")
     public ApiResponse getAll(@Valid UserReq req){
