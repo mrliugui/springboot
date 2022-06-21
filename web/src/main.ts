@@ -8,12 +8,19 @@ import 'ant-design-vue/dist/antd.css';
 import * as Icons from '@ant-design/icons-vue'
 
 import axios from 'axios'
+import {Tool} from "@/util/tool";
 
 //axios拦截器
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
     console.log("请求",config)
+    const token = store.state.user.token;
+    if(Tool.isNotEmpty(token)){
+        const header = config.headers || {};
+        header.token=token;
+        console.log("请求增加header:{}",token)
+    }
     return config;
 }, function (error) {
     // Do something with request error

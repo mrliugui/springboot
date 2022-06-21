@@ -77,8 +77,8 @@
     export default defineComponent({
         name: 'the-header',
         setup () {
-            const store = useStore();
             const userSession = computed(() => store.state.user)
+            const store = useStore();
             const loginShow = ref(false);
             let formState = reactive<FormState>({
                 username: '',
@@ -92,6 +92,7 @@
                             console.log("用户名称{}",store.state.user.name)
                             //赋值空对象，不赋值null，是因为避免空指针异常
                             store.commit("setUser",{})
+                            console.log("用户名称",store.state.user.name)
                             message.success("退出登录成功")
                         }
                     }
@@ -118,6 +119,8 @@
                        user.value = response.data.data;
                        console.log(user.value)
                        store.commit("setUser",user.value);
+                       console.log("user:{}",store.state.user)
+                       console.log("Session:{}",sessionStorage.USER);
                        message.success("登录成功")
                    }else{
                        message.error(response.data.msg);
