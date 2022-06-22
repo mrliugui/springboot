@@ -2,6 +2,7 @@ package com.liugui.springboot.aspect;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
+import com.liugui.springboot.util.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -39,6 +40,8 @@ public class LogAspect {
         logger.info("请求地址{}.{}",request.getRequestURL(),request.getMethod());
         logger.info("请求远程地址{}",request.getRemoteAddr());
         logger.info("类名以及方法{}.{}",className,methodName);
+//        在线程中保存其中的ip地址
+        RequestContext.setRemoteAddr(getRemoteIp(request));
         //       过滤请求参数敏感信息
         Object[] args = joinPoint.getArgs();
         Object[] arguments = new Object[args.length];
@@ -79,6 +82,24 @@ public class LogAspect {
         logger.info("返回的值为：{}",JSON.toJSONString(result,filter1));
         logger.info("消耗的时间为：{}",System.currentTimeMillis()-startTime);
         return result;
+    }
+    /**
+     * 使用nginx做反向代理，需要用该方法才能取到真实的远程IP
+     * @param request
+     * @return
+     */
+    public String getRemoteIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 
 }

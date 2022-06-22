@@ -4,12 +4,16 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liugui.springboot.dao.ContentMapper;
 import com.liugui.springboot.dao.DocMapper;
+import com.liugui.springboot.myEnum.BusinessException;
+import com.liugui.springboot.myEnum.ExceptionEnum;
 import com.liugui.springboot.pojo.Content;
 import com.liugui.springboot.pojo.Doc;
 import com.liugui.springboot.req.DocReq;
 import com.liugui.springboot.req.UpdateDocReq;
 import com.liugui.springboot.service.DocService;
 import com.liugui.springboot.util.CopyUtil;
+import com.liugui.springboot.util.RedisUtil;
+import com.liugui.springboot.util.RequestContext;
 import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
@@ -19,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DocServiceImpl implements DocService {
@@ -32,6 +38,9 @@ public class DocServiceImpl implements DocService {
 
     @Resource
     private ContentMapper contentMapper;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @Override
     public PageVo bookList(DocReq req)
@@ -88,8 +97,19 @@ public class DocServiceImpl implements DocService {
 
     @Override
     public void vote(Long id) {
-        docMapper.increaseVoteById(id);
-    }
+//        docMapper.increaseVoteById(id);
+        String ip = RequestContext.getRemoteAddr();
+        String key= ip+id;
+        Map map = new HashMap();
+//        关于redis的数据库，我没有，所以这里就是模拟数据
+//        if(redisUtil.validateRepeat(ip+id,4*3600*24)){
+            if(map.containsKey(key)){
+                docMapper.increaseVoteById(id);
+                map.put(key,key);
+            }else{
+                throw new BusinessException(ExceptionEnum.HAS_VOTED);
+            }
+        }
 
     @Override
     public int updateSelectiveDoc(UpdateDocReq updateDocReq){

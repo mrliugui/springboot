@@ -59,6 +59,8 @@
                     (response) =>{
                    if(response.data.code === 10000){
                        doc.vote++
+                   }else{
+                       message.warn(response.data.msg)
                    }
                     }
                 )

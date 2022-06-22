@@ -7,6 +7,7 @@ public enum ExceptionEnum {
     GET_CONTENT_NULL(10004,"抱歉哦，该文档内容不存在"),
     LOGIN_NAME_AGAIN(10005,"用户名重复"),
     LOGIN_ERROR(10006,"用户名不存在或登陆密码错误"),
+    HAS_VOTED(10007,"您已点赞过了")
     ;
     private Integer code;
     private String msg;
