@@ -79,8 +79,16 @@ public class DocServiceImpl implements DocService {
     @Override
     public String getContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        if(!ObjectUtils.isEmpty(content)){
+          docMapper.increaseViewById(id);
+        }
         String contentStr  = content.getContent();
         return contentStr;
+    }
+
+    @Override
+    public void vote(Long id) {
+        docMapper.increaseVoteById(id);
     }
 
     @Override

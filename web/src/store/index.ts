@@ -2,25 +2,30 @@ import {createStore} from 'vuex'
 
 declare let SessionStorage: any;
 const KEY = "USER";
-// const getUser = (KEY: any) => {
+// const getUser = () => {
 //     try {
-//         return JSON.parse(sessionStorage.KEY)
+//         return JSON.parse(sessionStorage.USER)
 //     } catch (e) {
 //         return {}
 //     }
 // }
-export default createStore({
+const store =  createStore({
   state: {
     user:SessionStorage.get(KEY) || {}
   },
   getters: {
-//     getUser:(state) => {
-//       return state.user.filter(user: string => user.name);
-// }
+    getUser:(state) => {
+     return state.user;
+}
   },
   mutations: {
     setUser(state,user){
+      state.user=user || {};
       SessionStorage.set(KEY,user);
+      //   const newUser = JSON.parse(JSON.stringify(user))
+      //   sessionStorage.USER = JSON.stringify(newUser);
+        // state.user = sessionStorage.USER;
+        // SessionStorage.set(KEY,newUser);
     }
   },
   actions: {
@@ -28,3 +33,4 @@ export default createStore({
   modules: {
   }
 })
+export default store;

@@ -16,4 +16,5 @@ public interface DocService {
     List<DocVo> all(Long id);
     int deleteByIds(List<String> ids);
     String getContent(Long id);
+    void vote(Long id);
 }

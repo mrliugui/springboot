@@ -29,6 +29,11 @@ public class DocController {
         List<DocVo> docVos = docService.all(ebookId);
         return ApiResponse.success(docVos);
     }
+    @GetMapping("/vote/{id}")
+    public ApiResponse vote(@PathVariable("id") Long ebookId){
+           docService.vote(ebookId);
+        return ApiResponse.success();
+    }
 
     @GetMapping("/list")
     public ApiResponse getList(@Valid DocReq req){

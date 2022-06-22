@@ -18,9 +18,11 @@
                 :style="{ lineHeight: '64px' }"
         >
             <a-menu-item key="1"><router-link to="/">首页</router-link></a-menu-item>
-            <a-menu-item key="2"><router-link to="/admin/user">用户管理</router-link></a-menu-item>
-            <a-menu-item key="3"><router-link to="/admin/ebook">电子书管理</router-link></a-menu-item>
-            <a-menu-item key="4"><router-link to="/admin/category">分类管理</router-link></a-menu-item>
+
+            <a-menu-item key="2" :style="userSession.name?{}:{display:'none'}"><router-link to="/admin/user">用户管理</router-link></a-menu-item>
+            <a-menu-item key="3" :style="userSession.name?{}:{display:'none'}"><router-link to="/admin/ebook">电子书管理</router-link></a-menu-item>
+            <a-menu-item key="4" :style="userSession.name?{}:{display:'none'}"><router-link to="/admin/category">分类管理</router-link></a-menu-item>
+
             <a-menu-item key="5"><router-link to="/about">我的</router-link></a-menu-item>
         </a-menu>
 
@@ -65,7 +67,7 @@
     import {computed, defineComponent, reactive, ref} from 'vue';
     import axios from "axios";
     import {message} from "ant-design-vue";
-    import {useStore} from "vuex";
+    import store from "../store";
 
     interface FormState {
         username: string;
@@ -78,7 +80,10 @@
         name: 'the-header',
         setup () {
             const userSession = computed(() => store.state.user)
-            const store = useStore();
+            // watch(userSession,(newVal,oldVal) => {
+            //     console.log("newVal，oldVal",newVal,oldVal),
+            //         {immediate:true,deep:true}
+            // })
             const loginShow = ref(false);
             let formState = reactive<FormState>({
                 username: '',
@@ -89,7 +94,7 @@
                 axios.get("/user/logout/"+store.state.user.token).then(
                     (response) => {
                         if(response.data.code === 10000){
-                            console.log("用户名称{}",store.state.user.name)
+                            console.log("用户名称",store.state.user.name)
                             //赋值空对象，不赋值null，是因为避免空指针异常
                             store.commit("setUser",{})
                             console.log("用户名称",store.state.user.name)
@@ -120,7 +125,6 @@
                        console.log(user.value)
                        store.commit("setUser",user.value);
                        console.log("user:{}",store.state.user)
-                       console.log("Session:{}",sessionStorage.USER);
                        message.success("登录成功")
                    }else{
                        message.error(response.data.msg);

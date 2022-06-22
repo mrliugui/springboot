@@ -12,6 +12,10 @@ public class DocVo {
 
     private Integer sort;
 
+    private Long viewCount;
+
+    private Long voteCount;
+
     public Long getId() {
         return id;
     }
@@ -52,6 +56,22 @@ public class DocVo {
         this.sort = sort;
     }
 
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public Long getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Long voteCount) {
+        this.voteCount = voteCount;
+    }
+
     @Override
     public String toString() {
         return "DocVo{" +
@@ -60,6 +80,8 @@ public class DocVo {
                 ", name='" + name + '\'' +
                 ", parent=" + parent +
                 ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
                 '}';
     }
 }
