@@ -68,6 +68,7 @@
     import axios from "axios";
     import {message} from "ant-design-vue";
     import store from "../store";
+    import router from "../router";
 
     interface FormState {
         username: string;
@@ -98,6 +99,7 @@
                             //赋值空对象，不赋值null，是因为避免空指针异常
                             store.commit("setUser",{})
                             console.log("用户名称",store.state.user.name)
+                            router.push({name:'home'})
                             message.success("退出登录成功")
                         }
                     }

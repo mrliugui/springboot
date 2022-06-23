@@ -10,4 +10,5 @@ public interface EbookService {
     PageVo bookList(EbookReq req);
     int updateSelectiveEbook(UpdateEbookReq updateEbookReq);
     int deleteById(Long id);
+    int updateEbookDetail();
 }

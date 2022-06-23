@@ -82,4 +82,10 @@ public class EbookServiceImpl implements EbookService {
         int i = ebookMapper.deleteByPrimaryKey(id);
         return i;
     }
+
+    @Override
+    public int updateEbookDetail() {
+        int i = ebookMapper.updateEbookDetail();
+        return i;
+    }
 }

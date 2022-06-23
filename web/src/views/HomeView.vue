@@ -32,9 +32,10 @@
         <template #renderItem="{ item }">
             <a-list-item key="item.name">
               <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component :is="type" style="margin-right: 8px" />
-            {{ text }}
+          <span>
+            <component :is="'profile-outlined'" style="margin-left: 8px" />  {{item.docCount}}
+            <component :is="'read-outlined'" style="margin-left: 8px" />  {{item.viewCount}}
+            <component :is="'LikeOutlined'" style="margin-left: 8px" />  {{item.voteCount}}
           </span>
               </template>
               <a-list-item-meta :description="item.description">
@@ -132,17 +133,17 @@
                 },
                 pageSize: 3,
             };
-            const actions: Record<string, string>[] = [
-                { type: 'StarOutlined', text: '156' },
-                { type: 'LikeOutlined', text: '156' },
-                { type: 'MessageOutlined', text: '2' },
-            ];
+            // const actions: Record<string, string>[] = [
+            //     { type: 'StarOutlined', text: '156' },
+            //     { type: 'LikeOutlined', text: '156' },
+            //     { type: 'MessageOutlined', text: '2' },
+            // ];
             return {
                 selectedKeys2: ref<string[]>(['1']),
                 openKeys: ref<string[]>(['sub1']),
                 books,
                 pagination,
-                actions,
+                // actions,
                 level,
                 isShowWelcome,
                 handleClick
