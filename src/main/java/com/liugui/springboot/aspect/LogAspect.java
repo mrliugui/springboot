@@ -3,6 +3,7 @@ package com.liugui.springboot.aspect;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 import com.liugui.springboot.util.RequestContext;
+import com.liugui.springboot.util.SnowFlake;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +28,16 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
+    @Resource
+    private SnowFlake snowFlake;
+
     @Pointcut("execution(public * com.liugui.*.controller..*Controller.*(..))")
     public void pointController(){}
 
     @Before("pointController()")
     public void before(JoinPoint joinPoint){
+//        在controller开始之前就进行赋值自定义流水号
+//        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         Signature signature = joinPoint.getSignature();

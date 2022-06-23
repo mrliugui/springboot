@@ -2,7 +2,7 @@
 <configuration>
     <contextName>logback-spring-demo-dev</contextName>
     <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg %n"/>
-    <property name="pattern-color" value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %highlight(%-5level) %green(%logger{50}) - %highlight(%msg) %n"/>
+    <property name="pattern-color" value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %highlight(%-5level)  %green(%logger{50}) - %highlight(%msg) %n"/>
     <property name="LOG_HOME" value="logs"/>
 
     <!-- 控制台输出 -->
@@ -15,6 +15,8 @@
     <!-- 控制台输出-带颜色 -->
     <appender name="CONSOLE-WITH-COLOR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--表示增加日志流水号，以便于查看日志，但是目前这个功能对于我这个日志不太好看，在生产环境下，再进行使用-->
+            <!--%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %highlight(%-5level)  %green(%-18X{LOG_ID}) %green(%logger{50}) - %highlight(%msg) %n"-->
             <pattern>${pattern-color}</pattern>
         </encoder>
     </appender>
