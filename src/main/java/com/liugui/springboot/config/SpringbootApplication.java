@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 //因为springbootApplication注解包含了componentScan注解，但是该所包含的注解只是包括该包以下的子包
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @MapperScan(basePackages = "com.liugui.springboot.dao")
 @EnableScheduling
+@EnableAsync
 public class SpringbootApplication {
     private static final Logger LOG = LoggerFactory.getLogger(SpringbootApplication.class);
     public static void main(String[] args) {

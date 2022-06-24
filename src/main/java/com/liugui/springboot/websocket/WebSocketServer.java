@@ -14,6 +14,7 @@ import java.util.Map;
 @Component
 @ServerEndpoint("/ws/{token}")
 public class WebSocketServer {
+
     private static final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 
 //    给每一个用户设置一个唯一标识符：token
@@ -34,9 +35,10 @@ public class WebSocketServer {
     }
 
     @OnMessage
-    public void onMessage(String message){
+    public void onMessage(String message,Session session){
     logger.info("收到消息：{}，内容:{}",token,message);
     }
+
     @OnError
     public void onError(Throwable throwable,Session session){
     logger.error("产生错误{}",throwable);

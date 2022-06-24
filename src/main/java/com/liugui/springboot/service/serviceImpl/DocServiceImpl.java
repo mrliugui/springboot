@@ -4,8 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liugui.springboot.dao.ContentMapper;
 import com.liugui.springboot.dao.DocMapper;
-import com.liugui.springboot.myEnum.BusinessException;
-import com.liugui.springboot.myEnum.ExceptionEnum;
 import com.liugui.springboot.pojo.Content;
 import com.liugui.springboot.pojo.Doc;
 import com.liugui.springboot.req.DocReq;
@@ -17,9 +15,9 @@ import com.liugui.springboot.util.RequestContext;
 import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
-import com.liugui.springboot.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -44,7 +42,7 @@ public class DocServiceImpl implements DocService {
     private RedisUtil redisUtil;
 
     @Resource
-    private WebSocketServer webSocketServer;
+    private WsService wsService;
 
     @Override
     public PageVo bookList(DocReq req)
@@ -111,12 +109,14 @@ public class DocServiceImpl implements DocService {
             docMapper.increaseVoteById(id);
             map.put(key, key);
         } else {
-            throw new BusinessException(ExceptionEnum.HAS_VOTED);
+//            throw new BusinessException(ExceptionEnum.HAS_VOTED);
+
         }
         //由于redis不存在，所以点赞功能没有实现，所以关webSocket也只能测试一下，代码如下，测试成功
-
         Doc doc = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("【" + doc.getName() + "】已点赞");
+        String logId = MDC.get("LOG_ID");
+        wsService.sendInfo("【" + doc.getName() + "】", logId);
+
 
     }
 
