@@ -17,6 +17,7 @@ import com.liugui.springboot.util.RequestContext;
 import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
+import com.liugui.springboot.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class DocServiceImpl implements DocService {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     @Override
     public PageVo bookList(DocReq req)
@@ -99,17 +103,22 @@ public class DocServiceImpl implements DocService {
     public void vote(Long id) {
 //        docMapper.increaseVoteById(id);
         String ip = RequestContext.getRemoteAddr();
-        String key= ip+id;
+        String key = ip + id;
         Map map = new HashMap();
 //        关于redis的数据库，我没有，所以这里就是模拟数据
 //        if(redisUtil.validateRepeat(ip+id,4*3600*24)){
-            if(map.containsKey(key)){
-                docMapper.increaseVoteById(id);
-                map.put(key,key);
-            }else{
-                throw new BusinessException(ExceptionEnum.HAS_VOTED);
-            }
+        if (map.containsKey(key)) {
+            docMapper.increaseVoteById(id);
+            map.put(key, key);
+        } else {
+            throw new BusinessException(ExceptionEnum.HAS_VOTED);
         }
+        //由于redis不存在，所以点赞功能没有实现，所以关webSocket也只能测试一下，代码如下，测试成功
+
+        Doc doc = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo("【" + doc.getName() + "】已点赞");
+
+    }
 
     @Override
     public int updateSelectiveDoc(UpdateDocReq updateDocReq){
