@@ -36,10 +36,28 @@
         </encoder>
     </appender>
 
+    <!--<appender name="mqAppender1" class="org.apache.rocketmq.logappender.logback.RocketmqLogbackAppender">-->
+        <!--<tag>vote</tag>-->
+        <!--<topic>VOTE</topic>-->
+        <!--<producerGroup>default</producerGroup>-->
+        <!--<nameServerAddress>127.0.0.1:9876</nameServerAddress>-->
+        <!--<layout>-->
+            <!--<pattern>%date %p %t - %m%n</pattern>-->
+        <!--</layout>-->
+    <!--</appender>-->
+
+    <!--<appender name="mqAsyncAppender1" class="ch.qos.logback.classic.AsyncAppender">-->
+        <!--<queueSize>1024</queueSize>-->
+        <!--<discardingThreshold>80</discardingThreshold>-->
+        <!--<maxFlushTime>2000</maxFlushTime>-->
+        <!--<neverBlock>true</neverBlock>-->
+        <!--<appender-ref ref="mqAppender1"/>-->
+    <!--</appender>-->
 
     <root level="INFO">
         <appender-ref ref="CONSOLE-WITH-COLOR"/>
         <appender-ref ref="FILE"/>
+        <!--<appender-ref ref="mqAppender1"/>-->
     </root>
 
     <logger name="com.example.logbackdemo.IndexAction" level="info" additivity="false">

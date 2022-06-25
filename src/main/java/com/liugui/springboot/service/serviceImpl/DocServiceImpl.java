@@ -15,6 +15,7 @@ import com.liugui.springboot.util.RequestContext;
 import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -43,6 +44,9 @@ public class DocServiceImpl implements DocService {
 
     @Resource
     private WsService wsService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     public PageVo bookList(DocReq req)
@@ -116,8 +120,7 @@ public class DocServiceImpl implements DocService {
         Doc doc = docMapper.selectByPrimaryKey(id);
         String logId = MDC.get("LOG_ID");
         wsService.sendInfo("【" + doc.getName() + "】", logId);
-
-
+//        rocketMQTemplate.convertAndSend("VOTE","【" + doc.getName() + "】");
     }
 
     @Override
