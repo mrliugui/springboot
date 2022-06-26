@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/ebook-snapShot")
-public class EbookSnapshot {
+public class EbookSnapshotController {
 
     @Resource
     private EbookSnapshotService ebookSnapshotService;

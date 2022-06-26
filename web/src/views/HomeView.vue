@@ -26,7 +26,7 @@
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
         <div v-show="isShowWelcome">
-          <p>in no case shall we lose in the future</p>
+       <the-welcome></the-welcome>
         </div>
         <a-list  v-show="!isShowWelcome" item-layout="vertical" size="large" :data-source="books" :grid="{ gutter: 30, column: 3 }">
         <template #renderItem="{ item }">
@@ -67,6 +67,7 @@
         UserOutlined
     } from '@ant-design/icons-vue';
     import axios from 'axios';
+    import theWelcome from '../components/the-welcome.vue'
 
     export default defineComponent({
      name: 'HomeView',
@@ -77,6 +78,7 @@
          StarOutlined,
          LikeOutlined,
          MessageOutlined,
+         theWelcome
      },
         setup(){
          const isShowWelcome = ref(true)
