@@ -13,6 +13,18 @@
   <sql id="Base_Column_List">
     id, ebook_id, date, view_count, vote_count, view_increase, vote_increase
   </sql>
+  <!--关于前端所需要的数据-->
+  <select id="getStatistic" resultType="com.liugui.springboot.vo.EbookSnapshotVo">
+    select `date` as `date`,
+    sum(vote_count) as voteCount,
+    sum(view_count) as viewCount,
+    sum(view_increase) as viewIncrease,
+    sum(vote_increase) as voteIncrease
+    from ebook_snapshot
+    where date >= date_sub(current_date,INTERVAL 1 day)
+    group by `date`
+    order by `date` asc
+  </select>
   <!--#为所有电子书生成今天的记录，如果没有.
   更新总阅读数，和总点赞数.
   更新今日阅读数，和今日点赞数-->

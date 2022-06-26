@@ -1,6 +1,7 @@
 package com.liugui.springboot.dao;
 
 import com.liugui.springboot.pojo.EbookSnapshot;
+import com.liugui.springboot.vo.EbookSnapshotVo;
 
 public interface EbookSnapshotMapper {
     int deleteByPrimaryKey(Long id);
@@ -16,4 +17,7 @@ public interface EbookSnapshotMapper {
     int updateByPrimaryKey(EbookSnapshot record);
 
     void updateSnapshotMapper();
+
+    EbookSnapshotVo getStatistic();
+
 }
