@@ -15,7 +15,6 @@ import com.liugui.springboot.util.RequestContext;
 import com.liugui.springboot.util.SnowFlake;
 import com.liugui.springboot.vo.DocVo;
 import com.liugui.springboot.vo.PageVo;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -26,6 +25,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import org.apache.rocketmq.spring.core.RocketMQTemplate;
 
 @Service
 public class DocServiceImpl implements DocService {
@@ -45,8 +46,8 @@ public class DocServiceImpl implements DocService {
     @Resource
     private WsService wsService;
 
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Resource
+//    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     public PageVo bookList(DocReq req)
