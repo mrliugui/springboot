@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liugui.springboot.dao.EbookSnapshotMapper">
+  <resultMap id="BaseResultMap" type="com.liugui.springboot.pojo.EbookSnapshot">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ebook_id" jdbcType="BIGINT" property="ebookId" />
+    <result column="date" jdbcType="DATE" property="date" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="vote_count" jdbcType="INTEGER" property="voteCount" />
+    <result column="view_increase" jdbcType="INTEGER" property="viewIncrease" />
+    <result column="vote_increase" jdbcType="INTEGER" property="voteIncrease" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ebook_id, date, view_count, vote_count, view_increase, vote_increase
+  </sql>
+  <!--#为所有电子书生成今天的记录，如果没有.
+  更新总阅读数，和总点赞数.
+  更新今日阅读数，和今日点赞数-->
+  <update id="updateSnapshotMapper">
+insert into ebook_snapshot (ebook_id, date,view_count,vote_count,view_increase,vote_increase)
+ select t1.id,CURDATE(),0,0,0,0 from ebook t1
+ where not EXISTS(
+ SELECT 1 from ebook_snapshot t2
+where t1.id = t2.ebook_id and t2.date =CURDATE()
+);
+
+UPDATE ebook_snapshot t1,ebook t2
+SET t1.view_count=t2.view_count,t1.vote_count=t2.vote_count
+where t1.ebook_id=t2.id and t1.date=CURDATE();
+
+UPDATE ebook_snapshot t1  LEFT JOIN (SELECT ebook_id,view_count,vote_count from ebook_snapshot where date=DATE_SUB(CURDATE(),INTERVAL 1 day)) t2
+on t1.ebook_id=t2.ebook_id
+SET t1.view_increase = t1.view_count-IFNULL(t2.view_count,0),
+    t1.vote_increase = t1.vote_count-IFNULL(t2.vote_count,0)
+where t1.date=CURDATE();
+
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ebook_snapshot
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ebook_snapshot
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.liugui.springboot.pojo.EbookSnapshot">
+    insert into ebook_snapshot (id, ebook_id, date, 
+      view_count, vote_count, view_increase, 
+      vote_increase)
+    values (#{id,jdbcType=BIGINT}, #{ebookId,jdbcType=BIGINT}, #{date,jdbcType=DATE}, 
+      #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER}, #{viewIncrease,jdbcType=INTEGER}, 
+      #{voteIncrease,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.liugui.springboot.pojo.EbookSnapshot">
+    insert into ebook_snapshot
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ebookId != null">
+        ebook_id,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+      <if test="viewCount != null">
+        view_count,
+      </if>
+      <if test="voteCount != null">
+        vote_count,
+      </if>
+      <if test="viewIncrease != null">
+        view_increase,
+      </if>
+      <if test="voteIncrease != null">
+        vote_increase,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ebookId != null">
+        #{ebookId,jdbcType=BIGINT},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="viewCount != null">
+        #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="voteCount != null">
+        #{voteCount,jdbcType=INTEGER},
+      </if>
+      <if test="viewIncrease != null">
+        #{viewIncrease,jdbcType=INTEGER},
+      </if>
+      <if test="voteIncrease != null">
+        #{voteIncrease,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liugui.springboot.pojo.EbookSnapshot">
+    update ebook_snapshot
+    <set>
+      <if test="ebookId != null">
+        ebook_id = #{ebookId,jdbcType=BIGINT},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=DATE},
+      </if>
+      <if test="viewCount != null">
+        view_count = #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="voteCount != null">
+        vote_count = #{voteCount,jdbcType=INTEGER},
+      </if>
+      <if test="viewIncrease != null">
+        view_increase = #{viewIncrease,jdbcType=INTEGER},
+      </if>
+      <if test="voteIncrease != null">
+        vote_increase = #{voteIncrease,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liugui.springboot.pojo.EbookSnapshot">
+    update ebook_snapshot
+    set ebook_id = #{ebookId,jdbcType=BIGINT},
+      date = #{date,jdbcType=DATE},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      vote_count = #{voteCount,jdbcType=INTEGER},
+      view_increase = #{viewIncrease,jdbcType=INTEGER},
+      vote_increase = #{voteIncrease,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
