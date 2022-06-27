@@ -3,6 +3,8 @@ package com.liugui.springboot.dao;
 import com.liugui.springboot.pojo.EbookSnapshot;
 import com.liugui.springboot.vo.EbookSnapshotVo;
 
+import java.util.List;
+
 public interface EbookSnapshotMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -18,6 +20,6 @@ public interface EbookSnapshotMapper {
 
     void updateSnapshotMapper();
 
-    EbookSnapshotVo getStatistic();
+    List<EbookSnapshotVo> getStatistic();
 
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 @RestController
@@ -19,7 +20,7 @@ public class EbookSnapshotController {
 
     @GetMapping("/get-statistic")
     public ApiResponse getStatistic(){
-        EbookSnapshotVo statistic = ebookSnapshotService.getStatistic();
+        List<EbookSnapshotVo> statistic = ebookSnapshotService.getStatistic();
         return ApiResponse.success(statistic);
     }
 }

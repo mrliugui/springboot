@@ -6,8 +6,10 @@ import com.liugui.springboot.vo.EbookSnapshotVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 ;
+
 @Service
 public class EbookSnapshotServiceImpl implements EbookSnapshotService {
 
@@ -21,8 +23,8 @@ public class EbookSnapshotServiceImpl implements EbookSnapshotService {
     }
 
     @Override
-    public EbookSnapshotVo getStatistic() {
-        EbookSnapshotVo statistic = ebookSnapshotMapper.getStatistic();
+    public List<EbookSnapshotVo> getStatistic() {
+        List<EbookSnapshotVo> statistic = ebookSnapshotMapper.getStatistic();
         return statistic;
     }
 }
