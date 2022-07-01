@@ -1,6 +1,7 @@
 package com.liugui.springboot.dao;
 
 import com.liugui.springboot.pojo.EbookSnapshot;
+import com.liugui.springboot.vo.EbookSnapshotEChartVo;
 import com.liugui.springboot.vo.EbookSnapshotVo;
 
 import java.util.List;
@@ -22,4 +23,5 @@ public interface EbookSnapshotMapper {
 
     List<EbookSnapshotVo> getStatistic();
 
+    List<EbookSnapshotEChartVo> get30Statistic();
 }

@@ -23,7 +23,7 @@
             <a-menu-item key="3" :style="userSession.name?{}:{display:'none'}"><router-link to="/admin/ebook">电子书管理</router-link></a-menu-item>
             <a-menu-item key="4" :style="userSession.name?{}:{display:'none'}"><router-link to="/admin/category">分类管理</router-link></a-menu-item>
 
-            <a-menu-item key="5"><router-link to="/about">我的</router-link></a-menu-item>
+            <a-menu-item key="5"><router-link style="opacity: 1;overflow-y:visible; display: block ;" to="/about">我的</router-link></a-menu-item>
         </a-menu>
 
     </a-layout-header>
@@ -70,6 +70,8 @@
     import store from "../store";
     import router from "../router";
 
+    declare let hexMd5: any;
+
     interface FormState {
         username: string;
         password: string;
@@ -80,7 +82,7 @@
     export default defineComponent({
         name: 'the-header',
         setup () {
-            const userSession = computed(() => store.state.user)
+            const userSession = computed(() => store.state.user) || {}
             // watch(userSession,(newVal,oldVal) => {
             //     console.log("newVal，oldVal",newVal,oldVal),
             //         {immediate:true,deep:true}
@@ -112,9 +114,10 @@
             }
             const onFinish = (values: any) => {
                 console.log('Success:', values);
+                console.log(hexMd5(values.password))
                 const data = {
                     "username": values.username,
-                    "password": values.password,
+                    "password": hexMd5(values.password),
                 }
                 axios.post("/user/login",data,{
                     headers: {
@@ -123,11 +126,12 @@
                 }).then((response) => {
                    if(response.data.code===10000){
                        loginShow.value = false
+                       message.success("登录成功")
                        user.value = response.data.data;
                        console.log(user.value)
                        store.commit("setUser",user.value);
                        console.log("user:{}",store.state.user)
-                       message.success("登录成功")
+
                    }else{
                        message.error(response.data.msg);
                    }
@@ -166,5 +170,11 @@
         float: right;
         margin: 16px 0 16px 24px;
     }
+    .menu1{
+        opacity: 1 !important;
+        overflow-y: visible !important;
+        display: block !important;
+    }
+
 
 </style>

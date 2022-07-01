@@ -19,7 +19,8 @@ public class LoginInterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/category/**")
-                 .excludePathPatterns("/ebook-snapShot/get-statistic");
+                .excludePathPatterns("/ebook-snapShot/*")
+                .excludePathPatterns("/ebook/list");
     }
 
 }

@@ -2,6 +2,7 @@ package com.liugui.springboot.controller;
 
 import com.liugui.springboot.common.ApiResponse;
 import com.liugui.springboot.service.EbookSnapshotService;
+import com.liugui.springboot.vo.EbookSnapshotEChartVo;
 import com.liugui.springboot.vo.EbookSnapshotVo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,11 @@ public class EbookSnapshotController {
     @GetMapping("/get-statistic")
     public ApiResponse getStatistic(){
         List<EbookSnapshotVo> statistic = ebookSnapshotService.getStatistic();
+        return ApiResponse.success(statistic);
+    }
+    @GetMapping("/get-30statistic")
+    public ApiResponse get30Statistic(){
+        List<EbookSnapshotEChartVo> statistic = ebookSnapshotService.get30Statistic();
         return ApiResponse.success(statistic);
     }
 }

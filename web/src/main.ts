@@ -6,8 +6,8 @@ import store from './store'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import * as Icons from '@ant-design/icons-vue'
-
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 import {Tool} from "@/util/tool";
 
 //axios拦截器
@@ -53,3 +53,8 @@ const icons: any = Icons
 for ( const i in icons){
     app.component(i,icons[i])
 }
+axios.defaults.transformResponse = [function (data) {
+    // Do whatever you want to transform the data
+    return JSONbig.parse(data)
+}]
+

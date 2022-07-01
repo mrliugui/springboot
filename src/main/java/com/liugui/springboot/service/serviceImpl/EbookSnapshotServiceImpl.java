@@ -2,6 +2,7 @@ package com.liugui.springboot.service.serviceImpl;
 
 import com.liugui.springboot.dao.EbookSnapshotMapper;
 import com.liugui.springboot.service.EbookSnapshotService;
+import com.liugui.springboot.vo.EbookSnapshotEChartVo;
 import com.liugui.springboot.vo.EbookSnapshotVo;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,12 @@ public class EbookSnapshotServiceImpl implements EbookSnapshotService {
     @Override
     public List<EbookSnapshotVo> getStatistic() {
         List<EbookSnapshotVo> statistic = ebookSnapshotMapper.getStatistic();
+        return statistic;
+    }
+
+    @Override
+    public List<EbookSnapshotEChartVo> get30Statistic() {
+        List<EbookSnapshotEChartVo> statistic = ebookSnapshotMapper.get30Statistic();
         return statistic;
     }
 }

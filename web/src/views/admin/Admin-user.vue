@@ -166,7 +166,8 @@
         let visibleReset = ref(false)
         const onFinishReset = async (values: any) => {
             const { user } = reactive(values)
-            user.password=hexMd5(user.loginName+KEY)
+            user.password=hexMd5(user.password+KEY)
+            console.log(user.password)
             const data = {
                 "id": user.id,
                 "password":user.password,
@@ -279,7 +280,7 @@
             const onFinish = async (values: any) => {
                 const { user } = reactive(values)
                 console.log(values)
-                user.password=hexMd5(user.loginName+KEY)
+                user.password=hexMd5(user.password+KEY)
                 const data = {
                     "id": user.id,
                     "loginName":user.loginName,
@@ -378,7 +379,7 @@
             // }
             // const { current, defaultPageSize } = pagination
             // const { total } = toRefs(pagination)
-            const handleQuerry = (params: any) => {
+            const handleQuerry =  (params: any) => {
                loading.value  = true
                axios.get("/user/list",{
                    params:{
@@ -388,6 +389,7 @@
                }).then((response) => {
                        if(response.data.code === 10000){
                            loading.value = false
+                           console.log("list",response)
                            const apiResponse = response.data
                            books.value  =apiResponse.data.content
                            pagination.current = params.pageNum
