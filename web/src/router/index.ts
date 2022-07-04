@@ -4,6 +4,7 @@ import AdminView from '../views/admin/Admin-Ebook.vue'
 import AdminCategoryView from '../views/admin/Admin-Category.vue'
 import AdminDocView from '../views/admin/Admin-Doc.vue'
 import testVue from '../views/test-v.vue'
+import testVue1 from '../views/test-2.vue'
 import DocDetailVue from '../views/doc/DocDetail.vue'
 import AdminUser from '../views/admin/Admin-user.vue'
 import store from '../store'
@@ -42,6 +43,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'test',
         component: testVue
     },
+    {
+        path: '/test1',
+        name: 'test1',
+        component: testVue1
+},
     {
         path: '/admin/doc/',
         name: 'doc',

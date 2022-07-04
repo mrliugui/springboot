@@ -33,7 +33,6 @@
           <a-space>
           <a-button type="primary" size="large" @click="exit(record)">编辑</a-button>
               <a-button type="primary" size="large" @click="showDrawer(record.id)">内容预览</a-button>
-
                <a-popconfirm
                        title="你确认删除这本书籍吗？"
                        ok-text="是"
@@ -65,7 +64,8 @@
                       name="nest-messages"
                       :validate-messages="validateMessages"
                       @finish="onFinish"
-              >   <a-form-item :name="['doc', 'ebookId']" label="ebookId" v-show="false">
+              >
+                  <a-form-item :name="['doc', 'ebookId']" label="ebookId" v-show="false">
                   <a-input v-model:value="formState.doc.ebookId" />
                   </a-form-item>
 
@@ -77,15 +77,13 @@
                       <!--<a-input v-model:value="formState.doc.parent"/>-->
                       <a-tree-select
                           v-model:value="formState.doc.parent"
-                          show-search
                           style="width: 100%"
                           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                           placeholder="Please select"
-                          allow-clear
                           tree-default-expand-all
                           :tree-data="treeSelectData"
-                          :field-names="{title:'name',value:'id',key:'id',children:'children'}"
-                  ></a-tree-select>
+                          :field-names="{children:'children', label:'name', value: 'id' }"
+                      ></a-tree-select>
                   </a-form-item>
                       <!--<a-form-item :name="['doc', 'parent']" label="parent" :rules="[{required: true}]">-->
                       <!--<a-select-->
@@ -104,7 +102,7 @@
                   <a-form-item :name="['doc', 'sort']" label="sort" :rules="[{type:'number',min: 0, max: 10}]">
                       <a-input-number  v-model:value="formState.doc.sort" />
                   </a-form-item>
-                  <a-form-item :name="['doc', 'sort']" label="content" :layout="{ labelCol: { span: 4 },wrapperCol: { span: 16 },
+                  <a-form-item :name="['doc', 'content']" label="content" :layout="{ labelCol: { span: 4 },wrapperCol: { span: 16 },
             }">
                       <div style="border: 1px solid #ccc">
                           <Toolbar
@@ -150,6 +148,7 @@
     import '@wangeditor/editor/dist/css/style.css' // 引入 css
     import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 
+
     const columns = [
 
         {
@@ -181,6 +180,7 @@
             sort:''
         },
     });
+
     const visible = ref(false);
     const useModelConfirm =(treeSelectData: any,setDisable: any,level: any,handleQuerryContent: any,valueHtml: any) => {
         const modalText = ref("Content of the modal");
@@ -209,6 +209,7 @@
 
             // 为选择树添加一个"无"
             treeSelectData.value.unshift({id: 0, name: '无'});
+            console.log("treeSelectData",treeSelectData.value)
         }
         return {
             modalText,
@@ -258,7 +259,7 @@
                 console.log("values:{}",values)
 
                 const data = {
-                    "id": doc.id,
+                    "id": Tool.uuid(10,10),
                     "ebookId":doc.ebookId,
                     "name": doc.name,
                     "parent": doc.parent,
@@ -524,7 +525,7 @@
                 visible1,
                 afterVisibleChange,
                 showDrawer,
-                innerHTML
+                innerHTML,
             };
         },
     });

@@ -71,7 +71,7 @@
     import router from "../router";
 
     declare let hexMd5: any;
-
+     declare let KEY:any;
     interface FormState {
         username: string;
         password: string;
@@ -114,10 +114,10 @@
             }
             const onFinish = (values: any) => {
                 console.log('Success:', values);
-                console.log(hexMd5(values.password))
+                console.log(hexMd5(values.password+KEY))
                 const data = {
                     "username": values.username,
-                    "password": hexMd5(values.password),
+                    "password": hexMd5(values.password+KEY),
                 }
                 axios.post("/user/login",data,{
                     headers: {

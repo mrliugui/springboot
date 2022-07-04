@@ -101,7 +101,7 @@
                   <a-form-item :name="['ebook', 'docCount']" label="docCount" :rules="[{ type: 'number', min: 0, max: 99}]">
                       <a-input-number v-model:value="formState.ebook.docCount" />
                   </a-form-item>
-                  <a-form-item :name="['ebook', 'category']" label="docCount">
+                  <a-form-item :name="['ebook', 'category']" label="category">
                   <a-cascader v-model:value="categoryIds" :options="level1"
                               placeholder="Please select"
                               :field-names="{ label: 'name', value: 'id', children: 'children' }"
